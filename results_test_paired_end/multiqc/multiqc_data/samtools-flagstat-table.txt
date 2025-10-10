@@ -1,0 +1,4 @@
+Sample	Total Reads	Total Passed QC	Mapped	Secondary Alignments	Supplementary Alignments	Duplicates	Paired in Sequencing	Properly Paired	Self and mate mapped	Singletons	Mate mapped to diff chr	Diff chr (mapQ >= 5)
+Ca3-DNA_09B_unbarcoded	0.001931	0.001931	0.0019299999999999999	7e-06	1.2e-05	0.000158	0.0019119999999999999	0.001844	0.0019099999999999998	1e-06	3.7999999999999995e-05	1.8e-05
+Ca3-RNA-NNSR_09Z_unbarcoded	0.000137	0.000137	0.000135	2.9e-05	0.0	6e-06	0.000108	7.8e-05	0.000104	2e-06	2e-06	1e-06
+Ca3-TNA-NNSR_09N_unbarcoded	0.001629	0.001629	0.0016279999999999999	1.3e-05	9.999999999999999e-06	0.00011399999999999999	0.001606	0.00156	0.001604	1e-06	1.6e-05	4e-06

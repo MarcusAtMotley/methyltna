@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Nextflow bioinformatics pipeline based on the nf-core template (version 3.3.2). The pipeline performs basic quality control analysis on sequencing data using FastQC and generates a comprehensive MultiQC report.
+This is a Nextflow bioinformatics pipeline based on the nf-core template (version 3.3.2). The pipeline performs TNA-EM-seq analysis - combined transcriptome and methylome sequencing with RNA/DNA barcode separation.
 
-**Pipeline**: Motleybio-organization/modulestesting  
-**Main workflow**: Read QC with FastQC and MultiQC reporting  
-**Author**: Marcus Viscardi  
+**Pipeline**: Motleybio-organization/methyltna
+**Main workflow**: TNA-EM-seq analysis with dual RNA/DNA processing paths
+**Author**: Marcus Viscardi
 **Nextflow version**: >=24.10.5
 
 ## Common Commands
@@ -46,16 +46,19 @@ nextflow run . -profile test,docker --outdir results
 ## Architecture
 
 ### Core Workflow Structure
-- **main.nf**: Entry point defining the main workflow `MOTLEYBIOORGANIZATION_MODULESTESTING`
-- **workflows/modulestesting.nf**: Contains the `MODULESTESTING` workflow with FastQC and MultiQC processes
-- **subworkflows/local/utils_nfcore_modulestesting_pipeline/main.nf**: Pipeline initialization, completion, and utility functions
+- **main.nf**: Entry point defining the main workflow `MOTLEYBIOORGANIZATION_METHYLTNA`
+- **workflows/methyltna.nf**: Contains the `METHYLTNA` workflow with TNA deconvolution, alignment, and analysis processes
+- **subworkflows/local/utils_nfcore_methyltna_pipeline/main.nf**: Pipeline initialization, completion, and utility functions
 
 ### Workflow Flow
 1. **PIPELINE_INITIALISATION**: Validates parameters and creates input channels from samplesheet
-2. **MODULESTESTING**: 
-   - Runs FastQC on input samples
-   - Collects software versions
-   - Generates MultiQC report combining all QC results
+2. **METHYLTNA**:
+   - Performs read trimming with FastQC and TrimGalore
+   - Executes TNA deconvolution (RNA barcode extraction)
+   - Processes RNA reads through STAR alignment and gene quantification
+   - Processes DNA reads through Biscuit methylation analysis
+   - Performs variant calling with LoFreq
+   - Generates comprehensive MultiQC report
 3. **PIPELINE_COMPLETION**: Handles email notifications and cleanup
 
 ### Module Organization

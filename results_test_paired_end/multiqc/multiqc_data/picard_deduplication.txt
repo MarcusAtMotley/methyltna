@@ -1,0 +1,4 @@
+Sample	Unique Pairs	Unique Unpaired	Duplicate Pairs Optical	Duplicate Pairs Nonoptical	Unmapped
+Ca3-DNA_09B_unbarcoded	1752.0	1.0	16.0	142.0	1.0
+Ca3-RNA-NNSR_09Z_unbarcoded	98.0	2.0	0.0	6.0	2.0
+Ca3-TNA-NNSR_09N_unbarcoded	1490.0	1.0	4.0	110.0	1.0

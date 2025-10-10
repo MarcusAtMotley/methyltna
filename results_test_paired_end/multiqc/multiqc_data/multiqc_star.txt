@@ -1,0 +1,4 @@
+Sample	total_reads	avg_input_read_length	uniquely_mapped	uniquely_mapped_percent	avg_mapped_read_length	num_splices	num_annotated_splices	num_GTAG_splices	num_GCAG_splices	num_ATAC_splices	num_noncanonical_splices	deletion_rate	deletion_length	insertion_rate	insertion_length	multimapped	multimapped_percent	multimapped_toomany	multimapped_toomany_percent	unmapped_mismatches_percent	unmapped_tooshort_percent	unmapped_other_percent	unmapped_mismatches	unmapped_tooshort	unmapped_other	mapped_percent	mapped	mismatch_rate
+Ca3-DNA_09B_barcoded	42.0	300.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	100.0	0.0	0	42	0	0.0	0.0	
+Ca3-RNA-NNSR_09Z_barcoded	938.0	293.0	664.0	70.79	266.03	666.0	665.0	662.0	3.0	0.0	1.0	0.01	1.23	0.01	1.18	50.0	5.33	0.0	0.0	0.0	23.88	0.0	0	224	0	76.12	714.0	2.93
+Ca3-TNA-NNSR_09N_barcoded	189.0	292.0	108.0	57.14	268.99	100.0	100.0	100.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	7.0	3.7	0.0	0.0	0.0	39.15	0.0	0	74	0	60.84	115.0	2.87

@@ -1,0 +1,4 @@
+Sample	Double_Tagged	Single_Tagged	Unbarcoded
+Ca3-DNA_09B	0	42	956
+Ca3-RNA-NNSR_09Z	479	459	54
+Ca3-TNA-NNSR_09N	79	110	803

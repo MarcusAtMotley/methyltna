@@ -1,0 +1,4 @@
+Sample	Total	Assigned	Unassigned_Unmapped	Unassigned_Read_Type	Unassigned_Singleton	Unassigned_MappingQuality	Unassigned_Chimera	Unassigned_FragmentLength	Unassigned_Duplicate	Unassigned_MultiMapping	Unassigned_Secondary	Unassigned_NonSplit	Unassigned_NoFeatures	Unassigned_Overlapping_Length	Unassigned_Ambiguity	percent_assigned
+Ca3-DNA_09B_barcoded	84	0	84	0	0	0	0	0	0	0	0	0	0	0	0	0.0
+Ca3-RNA-NNSR_09Z_barcoded	2204	1161	449	0	0	0	0	0	0	428	0	0	32	0	134	52.67695099818511
+Ca3-TNA-NNSR_09N_barcoded	402	189	148	0	0	0	0	0	0	38	0	0	6	0	21	47.01492537313433

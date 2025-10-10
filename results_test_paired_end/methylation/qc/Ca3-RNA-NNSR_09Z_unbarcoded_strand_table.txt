@@ -1,0 +1,11 @@
+BISCUITqc Strand Table
+Strand Distribution:
+strand\BS      BSW (f)      BSC (r)
+     R1 (f):   37           
+0            
+     R1 (r):   0            
+39           
+     R2 (f):   0            
+26           
+     R2 (r):   30           
+0            

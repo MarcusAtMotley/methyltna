@@ -1,0 +1,4 @@
+Sample	Total reads	Aligned	Uniq aligned	Multimapped	Avg. read len	Avg. mapped len	Splices	Annotated splices	GT/AG splices	GC/AG splices	AT/AC splices	Non-canonical splices	Del rate	Del len	Ins rate	Ins len	Mismatch rate
+Ca3-DNA_09B_barcoded	4.2e-05	0.0	0.0	0.0	300.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	
+Ca3-RNA-NNSR_09Z_barcoded	0.0009379999999999999	76.12	70.79	4.9999999999999996e-05	293.0	266.03	0.0006659999999999999	0.000665	0.0006619999999999999	3e-06	0.0	1e-06	0.01	1.23	0.01	1.18	2.93
+Ca3-TNA-NNSR_09N_barcoded	0.00018899999999999999	60.84	57.14	7e-06	292.0	268.99	9.999999999999999e-05	9.999999999999999e-05	9.999999999999999e-05	0.0	0.0	0.0	0.0	0.0	0.0	0.0	2.87

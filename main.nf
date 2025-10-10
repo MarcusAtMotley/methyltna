@@ -14,8 +14,8 @@
 */
 
 include { METHYLTNA              } from './workflows/methyltna'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_modulestesting_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_modulestesting_pipeline'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_methyltna_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_methyltna_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE

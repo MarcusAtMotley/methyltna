@@ -1,0 +1,912 @@
+[33mNextflow 25.04.8 is available - Please consider updating your version to it[m
+
+ N E X T F L O W   ~  version 25.04.7
+
+Launching `./main.nf` [backstabbing_ritchie] DSL2 - revision: 37ead5a7e9
+
+Input/output options
+  input                     : test_data/samplesheet.csv
+  outdir                    : results_test_paired_end
+  rna_barcode_config        : /home/marcus/pipelines/methyltna/assets/runner_settings_readStart_EM_e0.0.yaml
+
+Reference genome options
+  reference_cache_dir       : /home/marcus/pipelines/methyltna/references
+
+Institutional config options
+  config_profile_name       : Test profile
+  config_profile_description: Minimal test dataset to check pipeline function
+
+Generic options
+  trace_report_suffix       : 2025-10-09_23-49-05
+
+Core Nextflow options
+  runName                   : backstabbing_ritchie
+  containerEngine           : singularity
+  launchDir                 : /home/marcus/pipelines/methyltna
+  workDir                   : /home/marcus/pipelines/methyltna/work
+  projectDir                : /home/marcus/pipelines/methyltna
+  userName                  : marcus
+  profile                   : test,singularity
+  configFiles               : /home/marcus/pipelines/methyltna/nextflow.config
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+------------------------------------------------------
+[-        ] MOT…YLTNA:READ_TRIMMING:FASTQC -
+[-        ] MOT…A:READ_TRIMMING:TRIMGALORE -
+
+[-        ] MOT…YLTNA:READ_TRIMMING:FASTQC -
+[-        ] MOT…A:READ_TRIMMING:TRIMGALORE -
+[-        ] MOT…_TRIMMING:FASTQC_POST_TRIM -
+[-        ] MOT…UTION:RNABARCODEEXTRACTION -
+[-        ] MOT…VOLUTION:RNA_STATS_SUMMARY -
+[-        ] MOT…YLTNA:METHYLTNA:STAR_ALIGN -
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_VIEW -
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_SORT -
+[-        ] MOT…LTNA:SUBREAD_FEATURECOUNTS -
+[-        ] MOT…:LOFREQ_RNA:SAMTOOLS_INDEX -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[-        ] MOT…NA:METHYLTNA:BISCUIT_ALIGN -
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+
+[-        ] MOT…YLTNA:READ_TRIMMING:FASTQC -
+[-        ] MOT…A:READ_TRIMMING:TRIMGALORE -
+[-        ] MOT…_TRIMMING:FASTQC_POST_TRIM -
+[-        ] MOT…UTION:RNABARCODEEXTRACTION -
+[-        ] MOT…VOLUTION:RNA_STATS_SUMMARY -
+[-        ] MOT…YLTNA:METHYLTNA:STAR_ALIGN -
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_VIEW -
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_SORT -
+[-        ] MOT…LTNA:SUBREAD_FEATURECOUNTS -
+[-        ] MOT…:LOFREQ_RNA:SAMTOOLS_INDEX -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[-        ] MOT…NA:METHYLTNA:BISCUIT_ALIGN -
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (6)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[93/609b3d] MOT…IEW (Ca3-DNA_09B_barcoded) | 0 of 3
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_SORT -
+[-        ] MOT…LTNA:SUBREAD_FEATURECOUNTS -
+[-        ] MOT…:LOFREQ_RNA:SAMTOOLS_INDEX -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (6)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[93/609b3d] MOT…IEW (Ca3-DNA_09B_barcoded) | 0 of 3
+[-        ] MOT…NA:METHYLTNA:SAMTOOLS_SORT -
+[-        ] MOT…LTNA:SUBREAD_FEATURECOUNTS -
+[-        ] MOT…:LOFREQ_RNA:SAMTOOLS_INDEX -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (9)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[-        ] MOT…LTNA:SUBREAD_FEATURECOUNTS -
+[-        ] MOT…:LOFREQ_RNA:SAMTOOLS_INDEX -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (14)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[fe/ab0a0b] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (15)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[-        ] MOT…FREQ_RNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…FREQ_RNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (21)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[-        ] MOT…EQ_RNA:LOFREQ_CALLPARALLEL -
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+
+executor >  local (22)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (23)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[10/6d07f2] MOT…3-TNA-NNSR_09N_unbarcoded) | 0 of 3
+[-        ] MOT…LTNA:PICARD_MARKDUPLICATES -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (24)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[d8/67c0d4] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 3
+[24/ee224b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (24)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[d8/67c0d4] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 3
+[24/ee224b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (26)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (26)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (26)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[a2/9620e3] MOT…Ca3-TNA-NNSR_09N_barcoded) | 0 of 3
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (26)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[-        ] MOT…ETHYLTNA:SAMTOOLS_FLAGSTAT -
+[-        ] MOT…ETHYLTNA:SAMTOOLS_IDXSTATS -
+[-        ] MOT…A:METHYLTNA:BISCUIT_PILEUP -
+[-        ] MOT…YLTNA:METHYLTNA:BISCUIT_QC -
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (30)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[24/ee224b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 3
+[da/f3e821] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[46/18141c] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[6d/086820] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[05/26fc9b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (30)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[24/ee224b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 3
+[da/f3e821] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 1
+[46/18141c] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 1
+[6d/086820] MOT…3-RNA-NNSR_09Z_unbarcoded) | 0 of 1
+[05/26fc9b] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 1
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (38)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 1 of 3
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 1 of 3
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 1 of 3
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (38)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 1 of 3
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (38)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[62/e57a24] MOT…3-TNA-NNSR_09N_unbarcoded) | 2 of 3
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (38)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[71/1532eb] MOT…Ca3-TNA-NNSR_09N_barcoded) | 1 of 2
+[-        ] MOT…A:METHYLTNA:LOFREQ_SUMMARY -
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (39)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 0 of 1
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (39)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 0 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (39)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[6d/086820] MOT…3-RNA-NNSR_09Z_unbarcoded) | 1 of 3
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+Plus 2 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (40)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[4e/7aea9b] MOT…scuit methylation summary) | 0 of 1
+Plus 1 more processes waiting for tasks…
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (41)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[4e/7aea9b] MOT…scuit methylation summary) | 1 of 1 ✔
+[a7/d7878a] MOT…ETHYLTNA:METHYLTNA:MULTIQC | 0 of 1
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (41)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[4e/7aea9b] MOT…scuit methylation summary) | 1 of 1 ✔
+[a7/d7878a] MOT…ETHYLTNA:METHYLTNA:MULTIQC | 1 of 1 ✔
+-[Motleybio-organization/modulestesting] Pipeline completed successfully-
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+
+executor >  local (41)
+[54/57fc5b] MOT…:FASTQC (Ca3-TNA-NNSR_09N) | 3 of 3, cached: 3 ✔
+[89/603fa5] MOT…G:TRIMGALORE (Ca3-DNA_09B) | 3 of 3, cached: 3 ✔
+[8e/4ac984] MOT…(Ca3-RNA-NNSR_09Z_trimmed) | 3 of 3, cached: 3 ✔
+[e9/ba4495] MOT…RACTION (Ca3-RNA-NNSR_09Z) | 3 of 3, cached: 3 ✔
+[58/193512] MOT…Y (RNA barcode statistics) | 1 of 1, cached: 1 ✔
+[e5/25dce0] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 3 of 3, cached: 3 ✔
+[eb/14f1b7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[c8/f35ab7] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[b1/9464f2] MOT…NTS (Ca3-DNA_09B_barcoded) | 3 of 3 ✔
+[6a/990be6] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[bb/2dd535] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[4e/37e6a2] MOT…Ca3-TNA-NNSR_09N_barcoded) | 3 of 3 ✔
+[ee/0fb4ae] MOT…Ca3-RNA-NNSR_09Z_barcoded) | 2 of 2 ✔
+[12/69785e] MOT…Y (LoFreq variant summary) | 1 of 1 ✔
+[00/3c88ba] MOT…N (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[86/9ec0ae] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[ee/25a582] MOT…T (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[38/6b8031] MOT…S (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[b4/3400e6] MOT…P (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[c7/215ab6] MOT…C (Ca3-DNA_09B_unbarcoded) | 3 of 3 ✔
+[4e/7aea9b] MOT…scuit methylation summary) | 1 of 1 ✔
+[a7/d7878a] MOT…ETHYLTNA:METHYLTNA:MULTIQC | 1 of 1 ✔
+-[Motleybio-organization/modulestesting] Pipeline completed successfully-
+WARN: Skipping LoFreq variant calling for Ca3-DNA_09B_barcoded: BAM file contains no mapped reads
+WARN: Access to undefined parameter `lofreq_call_indels` -- Initialise it to a default value eg. `params.lofreq_call_indels = some_value`
+WARN: Access to undefined parameter `lofreq_min_cov` -- Initialise it to a default value eg. `params.lofreq_min_cov = some_value`
+WARN: Access to undefined parameter `lofreq_max_depth` -- Initialise it to a default value eg. `params.lofreq_max_depth = some_value`
+WARN: Access to undefined parameter `lofreq_min_bq` -- Initialise it to a default value eg. `params.lofreq_min_bq = some_value`
+WARN: Access to undefined parameter `lofreq_min_alt_bq` -- Initialise it to a default value eg. `params.lofreq_min_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_alt_bq` -- Initialise it to a default value eg. `params.lofreq_def_alt_bq = some_value`
+WARN: Access to undefined parameter `lofreq_def_ref_bq` -- Initialise it to a default value eg. `params.lofreq_def_ref_bq = some_value`
+WARN: Access to undefined parameter `lofreq_sig` -- Initialise it to a default value eg. `params.lofreq_sig = some_value`
+WARN: Access to undefined parameter `lofreq_chunk_size` -- Initialise it to a default value eg. `params.lofreq_chunk_size = some_value`
+

@@ -1,6 +1,6 @@
 {
-    "name": "Motleybio-organization/modulestesting",
-    "homePage": "https://github.com/Motleybio-organization/modulestesting",
+    "name": "Motleybio-organization/methyltna",
+    "homePage": "https://github.com/Motleybio-organization/methyltna",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

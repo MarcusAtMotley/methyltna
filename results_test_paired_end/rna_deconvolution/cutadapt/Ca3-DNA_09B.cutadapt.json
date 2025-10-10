@@ -1,0 +1,345 @@
+{
+  "tag": "Cutadapt report",
+  "schema_version": [
+    0,
+    3
+  ],
+  "cutadapt_version": "5.1",
+  "python_version": "3.12.11",
+  "command_line_arguments": [
+    "--action=lowercase",
+    "-j",
+    "4",
+    "-g",
+    "NNSR=XN{22}TYYRATYTYT",
+    "-G",
+    "NNSR=XN{22}TYYRATYTYT",
+    "-g",
+    "NNSR2=XN{22}TYYRATYTRA",
+    "-G",
+    "NNSR2=XN{22}TYYRATYTRA",
+    "--overlap",
+    "10",
+    "--error-rate",
+    "0.0",
+    "--rename",
+    "{id} Barcode={r1.adapter_name}:{r2.adapter_name} Seq={r1.match_sequence}:{r2.match_sequence} {comment}",
+    "--minimum-length",
+    "1",
+    "Ca3-DNA_09B_1_val_1.fq",
+    "Ca3-DNA_09B_2_val_2.fq",
+    "-o",
+    "cutadapt/Ca3-DNA_09B_R1.cutadapt.fastq",
+    "-p",
+    "cutadapt/Ca3-DNA_09B_R2.cutadapt.fastq",
+    "--json=cutadapt/Ca3-DNA_09B.cutadapt.json",
+    "--times",
+    "2",
+    "--rc"
+  ],
+  "cores": 4,
+  "input": {
+    "path1": "Ca3-DNA_09B_1_val_1.fq",
+    "path2": "Ca3-DNA_09B_2_val_2.fq",
+    "paired": true
+  },
+  "read_counts": {
+    "input": 998,
+    "filtered": {
+      "too_short": 0,
+      "too_long": null,
+      "too_many_n": null,
+      "too_many_expected_errors": null,
+      "casava_filtered": null,
+      "discard_trimmed": null,
+      "discard_untrimmed": null
+    },
+    "output": 998,
+    "reverse_complemented": 0,
+    "read1_with_adapter": 35,
+    "read2_with_adapter": 7
+  },
+  "basepair_counts": {
+    "input": 298257,
+    "input_read1": 198340,
+    "input_read2": 99917,
+    "quality_trimmed": null,
+    "quality_trimmed_read1": null,
+    "quality_trimmed_read2": null,
+    "poly_a_trimmed": null,
+    "poly_a_trimmed_read1": null,
+    "poly_a_trimmed_read2": null,
+    "output": 298257,
+    "output_read1": 198340,
+    "output_read2": 99917
+  },
+  "adapters_read1": [
+    {
+      "name": "NNSR",
+      "total_matches": 29,
+      "on_reverse_complement": null,
+      "linked": false,
+      "five_prime_end": {
+        "type": "noninternal_five_prime",
+        "sequence": "NNNNNNNNNNNNNNNNNNNNNNTYYRATYTYT",
+        "error_rate": 0.0,
+        "indels": true,
+        "error_lengths": [
+          10
+        ],
+        "matches": 29,
+        "adjacent_bases": null,
+        "dominant_adjacent_base": null,
+        "trimmed_lengths": [
+          {
+            "len": 10,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 11,
+            "expect": 0.0,
+            "counts": [
+              3
+            ]
+          },
+          {
+            "len": 12,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 13,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 14,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 16,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 17,
+            "expect": 0.0,
+            "counts": [
+              7
+            ]
+          },
+          {
+            "len": 18,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 20,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 22,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 23,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 28,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 29,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 31,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 32,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          }
+        ]
+      },
+      "three_prime_end": null
+    },
+    {
+      "name": "NNSR2",
+      "total_matches": 7,
+      "on_reverse_complement": null,
+      "linked": false,
+      "five_prime_end": {
+        "type": "noninternal_five_prime",
+        "sequence": "NNNNNNNNNNNNNNNNNNNNNNTYYRATYTRA",
+        "error_rate": 0.0,
+        "indels": true,
+        "error_lengths": [
+          10
+        ],
+        "matches": 7,
+        "adjacent_bases": null,
+        "dominant_adjacent_base": null,
+        "trimmed_lengths": [
+          {
+            "len": 11,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 16,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 17,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 19,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          },
+          {
+            "len": 20,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          }
+        ]
+      },
+      "three_prime_end": null
+    }
+  ],
+  "adapters_read2": [
+    {
+      "name": "NNSR",
+      "total_matches": 5,
+      "on_reverse_complement": null,
+      "linked": false,
+      "five_prime_end": {
+        "type": "noninternal_five_prime",
+        "sequence": "NNNNNNNNNNNNNNNNNNNNNNTYYRATYTYT",
+        "error_rate": 0.0,
+        "indels": true,
+        "error_lengths": [
+          10
+        ],
+        "matches": 5,
+        "adjacent_bases": null,
+        "dominant_adjacent_base": null,
+        "trimmed_lengths": [
+          {
+            "len": 27,
+            "expect": 0.0,
+            "counts": [
+              3
+            ]
+          },
+          {
+            "len": 29,
+            "expect": 0.0,
+            "counts": [
+              2
+            ]
+          }
+        ]
+      },
+      "three_prime_end": null
+    },
+    {
+      "name": "NNSR2",
+      "total_matches": 2,
+      "on_reverse_complement": null,
+      "linked": false,
+      "five_prime_end": {
+        "type": "noninternal_five_prime",
+        "sequence": "NNNNNNNNNNNNNNNNNNNNNNTYYRATYTRA",
+        "error_rate": 0.0,
+        "indels": true,
+        "error_lengths": [
+          10
+        ],
+        "matches": 2,
+        "adjacent_bases": null,
+        "dominant_adjacent_base": null,
+        "trimmed_lengths": [
+          {
+            "len": 12,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          },
+          {
+            "len": 20,
+            "expect": 0.0,
+            "counts": [
+              1
+            ]
+          }
+        ]
+      },
+      "three_prime_end": null
+    }
+  ],
+  "poly_a_trimmed_read1": null,
+  "poly_a_trimmed_read2": null,
+  "additional_info": {
+    "adapter_name": "NNSR",
+    "adapter_sequence": "XN{22}TYYRATYTYT",
+    "output_file_r1": "cutadapt/Ca3-DNA_09B_R1.cutadapt.fastq",
+    "output_file_r2": "cutadapt/Ca3-DNA_09B_R2.cutadapt.fastq",
+    "number_double_tagged": 0,
+    "number_single_tagged": 42,
+    "number_untagged": 956,
+    "overall_percentage_barcoded": 0.04208416833667335,
+    "number_tagged": 42
+  }
+}

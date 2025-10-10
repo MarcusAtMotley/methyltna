@@ -50,9 +50,9 @@ lint:
 
 template:
   org: Motleybio-organization
-  name: modulestesting
-  description: Testing a simplified usage of nf-core modules to see what we can stand
-    up
+  name: methyltna
+  description: TNA-EM-seq analysis pipeline for combined transcriptome and methylome
+    sequencing with RNA/DNA barcode separation
   author: Marcus Viscardi
   version: 1.0.0dev
   force: true

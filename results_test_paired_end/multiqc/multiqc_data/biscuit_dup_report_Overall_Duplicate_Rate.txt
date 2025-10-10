@@ -1,0 +1,4 @@
+Sample	Duplicate Rate
+Ca3-DNA_09B_unbarcoded	8.182288969445883
+Ca3-RNA-NNSR_09Z_unbarcoded	4.37956204379562
+Ca3-TNA-NNSR_09N_unbarcoded	6.998158379373849

@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Motleybio-organization/modulestesting/master/nextflow_schema.json",
-    "title": "Motleybio-organization/modulestesting pipeline parameters",
-    "description": "Testing a simplified usage of nf-core modules to see what we can stand up",
+    "$id": "https://raw.githubusercontent.com/Motleybio-organization/methyltna/master/nextflow_schema.json",
+    "title": "Motleybio-organization/methyltna pipeline parameters",
+    "description": "TNA-EM-seq analysis pipeline: Combined transcriptome and methylome sequencing with RNA/DNA barcode separation",
     "type": "object",
     "$defs": {
         "input_output_options": {

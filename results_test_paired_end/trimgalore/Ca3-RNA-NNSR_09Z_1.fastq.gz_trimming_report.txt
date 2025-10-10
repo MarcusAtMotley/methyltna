@@ -1,0 +1,64 @@
+
+SUMMARISING RUN PARAMETERS
+==========================
+Input filename: Ca3-RNA-NNSR_09Z_1.fastq.gz
+Trimming mode: paired-end
+Trim Galore version: 0.6.10
+Cutadapt version: 4.9
+Number of cores used for trimming: 1
+Quality encoding type selected: ASCII+33
+Unable to auto-detect most prominent adapter from the first specified file (count smallRNA: 0, count Nextera: 0, count Illumina: 0)
+Defaulting to Illumina universal adapter ( AGATCGGAAGAGC ). Specify -a SEQUENCE to avoid this behavior).
+Adapter sequence: 'AGATCGGAAGAGC' (Illumina TruSeq, Sanger iPCR; default (inconclusive auto-detection))
+2-colour high quality G-trimming enabled, with quality cutoff: --nextseq-trim=20
+Maximum trimming error rate: 0.1 (default)
+Minimum required adapter overlap (stringency): 1 bp
+Minimum required sequence length for both reads before a sequence pair gets removed: 20 bp
+Output file will be GZIP compressed
+
+
+This is cutadapt 4.9 with Python 3.12.8
+Command line parameters: -j 1 -e 0.1 --nextseq-trim=20 -O 1 -a AGATCGGAAGAGC Ca3-RNA-NNSR_09Z_1.fastq.gz
+Processing single-end reads on 1 core ...
+Finished in 0.035 s (35.027 µs/read; 1.71 M reads/minute).
+
+=== Summary ===
+
+Total reads processed:                   1,000
+Reads with adapters:                       221 (22.1%)
+Reads written (passing filters):         1,000 (100.0%)
+
+Total basepairs processed:       199,131 bp
+Quality-trimmed:                   3,409 bp (1.7%)
+Total written (filtered):        195,192 bp (98.0%)
+
+=== Adapter 1 ===
+
+Sequence: AGATCGGAAGAGC; Type: regular 3'; Length: 13; Trimmed: 221 times
+
+Minimum overlap: 1
+No. of allowed errors:
+1-9 bp: 0; 10-13 bp: 1
+
+Bases preceding removed adapters:
+  A: 29.0%
+  C: 29.9%
+  G: 24.9%
+  T: 16.3%
+  none/other: 0.0%
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+1	170	250.0	0	170
+3	19	15.6	0	19
+4	4	3.9	0	4
+5	2	1.0	0	2
+8	22	0.0	0	22
+13	1	0.0	1	0 1
+18	2	0.0	1	0 2
+52	1	0.0	1	0 1
+
+RUN STATISTICS FOR INPUT FILE: Ca3-RNA-NNSR_09Z_1.fastq.gz
+=============================================
+1000 sequences processed in total
+
