@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "bowtie2_build_index"
+description: Build Bowtie2 index from FASTA reference with smart caching
+keywords:
+  - alignment
+  - index
+  - bowtie2
+  - reference
+tools:
+  - "bowtie2":
+      description: "Fast and sensitive read alignment"
+      homepage: "http://bowtie-bio.sourceforge.net/bowtie2/index.shtml"
+      documentation: "http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml"
+      tool_dev_url: "https://github.com/BenLangmead/bowtie2"
+      doi: "10.1038/nmeth.1923"
+      licence: ["GPL-3.0-or-later"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'genome' ] or [ id:'transcriptome' ]
+  - fasta:
+      type: file
+      description: Input FASTA file for indexing
+      pattern: "*.{fa,fna,fasta}"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'genome' ]
+  - index:
+      type: file
+      description: Bowtie2 index files
+      pattern: "*.bt2"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@your-username"
+maintainers:
+  - "@your-username"

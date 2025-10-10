@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "tna_deconvolution"
+description: RNA barcode deconvolution subworkflow for extracting barcodes from paired-end FASTQ reads
+keywords:
+  - barcode
+  - deconvolution
+  - rna
+  - fastq
+  - cutadapt
+components:
+  - rnabarcodeextraction
+input:
+  - ch_reads:
+      type: file
+      description: |
+        The input channel containing paired-end FASTQ files
+        Structure: [ val(meta), [ path(fastq_1), path(fastq_2) ] ]
+      pattern: "*.{fastq,fq,fastq.gz,fq.gz}"
+  - ch_config:
+      type: file
+      description: |
+        Configuration file for barcode extraction parameters
+        Structure: path(config.yml)
+      pattern: "*.{yml,yaml}"
+output:
+  - barcoded_reads:
+      type: file
+      description: |
+        Channel containing FASTQ files with detected barcodes
+        Structure: [ val(meta), [ path(fastq) ] ]
+      pattern: "*barcoded*.fastq"
+  - unbarcoded_reads:
+      type: file
+      description: |
+        Channel containing FASTQ files without detected barcodes
+        Structure: [ val(meta), [ path(fastq) ] ]
+      pattern: "*unbarcoded*.fastq"
+  - json_report:
+      type: file
+      description: |
+        Channel containing JSON reports from cutadapt
+        Structure: [ val(meta), path(json) ]
+      pattern: "*.cutadapt.json"
+  - txt_report:
+      type: file
+      description: |
+        Channel containing text reports from cutadapt
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*.cutadapt.txt"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@MarcusAtMotley"
+maintainers:
+  - "@MarcusAtMotley"

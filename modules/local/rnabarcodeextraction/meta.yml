@@ -1,0 +1,99 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "rnabarcodeextraction"
+description: Extract RNA barcodes from FASTQ reads using a portable cutadapt wrapper
+keywords:
+  - barcode
+  - extraction
+  - cutadapt
+  - fastq
+  - rna
+tools:
+  - "portable_cutadapt_wrapper":
+      description: "A portable wrapper around cutadapt for barcode extraction from paired-end FASTQ files"
+      homepage: "https://github.com/Motley-Bio-organization/modulestesting"
+      documentation: ""
+      tool_dev_url: "https://github.com/Motley-Bio-organization/modulestesting"
+      doi: ""
+      licence: "MIT"
+      identifier: null
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - reads:
+        type: file
+        description: Paired-end FASTQ files
+        pattern: "*.{fastq,fq,fastq.gz,fq.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1930" # FASTQ
+  - - config_file:
+        type: file
+        description: YAML configuration file for cutadapt wrapper
+        pattern: "*.{yml,yaml}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+output:
+  barcoded_reads:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*barcoded_R*.fastq":
+          type: file
+          description: FASTQ files containing reads with detected barcodes
+          pattern: "*barcoded_R*.fastq"
+          ontologies:
+            - edam: "http://edamontology.org/format_1930" # FASTQ
+  unbarcoded_reads:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*unbarcoded_R*.fastq":
+          type: file
+          description: FASTQ files containing reads without detected barcodes
+          pattern: "*unbarcoded_R*.fastq"
+          ontologies:
+            - edam: "http://edamontology.org/format_1930" # FASTQ
+  json_report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.cutadapt.json":
+          type: file
+          description: JSON report from cutadapt with detailed statistics
+          pattern: "*.cutadapt.json"
+          ontologies:
+            - edam: "http://edamontology.org/format_3464" # JSON
+  txt_report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.cutadapt.txt":
+          type: file
+          description: Text report from cutadapt with summary statistics
+          pattern: "*.cutadapt.txt"
+          ontologies:
+            - edam: "http://edamontology.org/format_2330" # Textual format
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@MarcusAtMotley"
+maintainers:
+  - "@MarcusAtMotley"

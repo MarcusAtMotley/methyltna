@@ -1,0 +1,508 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/Motleybio-organization/modulestesting/master/nextflow_schema.json",
+    "title": "Motleybio-organization/modulestesting pipeline parameters",
+    "description": "Testing a simplified usage of nf-core modules to see what we can stand up",
+    "type": "object",
+    "$defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["outdir"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "schema": "assets/schema_input.json",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to comma-separated file containing information about the samples in the experiment (FASTQ files).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Alternative: use --bcl_input_dir and --bcl_samplesheet for BCL files.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "bcl_input_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to directory containing Illumina BCL files.",
+                    "help_text": "Use this parameter along with --bcl_samplesheet to process BCL files directly instead of FASTQ files.",
+                    "fa_icon": "fas fa-folder"
+                },
+                "bcl_samplesheet": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to Illumina SampleSheet.csv used during sequencing.",
+                    "help_text": "This is the SampleSheet.csv file that was used during the sequencing run. Use along with --bcl_input_dir.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "demultiplexer": {
+                    "type": "string",
+                    "default": "bclconvert",
+                    "enum": ["bclconvert", "bcl2fastq"],
+                    "description": "Tool to use for BCL demultiplexing.",
+                    "help_text": "Choose between bclconvert (default, newer) or bcl2fastq (legacy) for demultiplexing BCL files.",
+                    "fa_icon": "fas fa-cogs"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip read trimming step.",
+                    "help_text": "When enabled, reads will not be trimmed with TrimGalore. Only raw read FastQC will be performed.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "fa_icon": "fas fa-file-signature"
+                },
+                "trim_quality": {
+                    "type": "integer",
+                    "description": "Phred quality score threshold for trimming low-quality bases (alternative to trim_nextseq).",
+                    "help_text": "Standard quality trimming for 4-color chemistry platforms. Use trim_nextseq instead for NextSeq/NovaSeq data. Cannot be used together with trim_nextseq.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "trim_min_length": {
+                    "type": "integer",
+                    "default": 20,
+                    "description": "Minimum read length after trimming (reads below this length are discarded).",
+                    "help_text": "Discard reads that became shorter than this length due to trimming.",
+                    "fa_icon": "fas fa-ruler"
+                },
+                "trim_nextseq": {
+                    "type": "integer",
+                    "default": 20,
+                    "description": "NextSeq/NovaSeq 2-color chemistry quality trimming threshold (recommended default).",
+                    "help_text": "Quality trimming optimized for 2-color chemistry platforms (NextSeq, NovaSeq). Ignores G base qualities to handle spurious high-quality G calls. Use instead of trim_quality for modern sequencers.",
+                    "fa_icon": "fas fa-dna"
+                },
+                "trim_adapter": {
+                    "type": "string",
+                    "description": "Custom adapter sequence to remove from reads.",
+                    "help_text": "Provide a custom adapter sequence. If not specified, TrimGalore will auto-detect common adapters (Illumina, Nextera, small RNA).",
+                    "fa_icon": "fas fa-scissors",
+                    "pattern": "^[ATCGN]+$"
+                },
+                "trim_stringency": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Overlap with adapter sequence required to trim a sequence.",
+                    "help_text": "Number of bases that must overlap between read and adapter for trimming to occur. Higher values = more stringent.",
+                    "fa_icon": "fas fa-crosshairs",
+                    "minimum": 1,
+                    "maximum": 10
+                },
+                "skip_rna_deconvolution": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip RNA barcode deconvolution step.",
+                    "help_text": "When enabled, RNA barcode extraction will be skipped. Useful when working with data that doesn't contain RNA barcodes.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "rna_barcode_config": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to YAML configuration file for RNA barcode extraction.",
+                    "help_text": "Configuration file containing barcode extraction parameters. Required when RNA deconvolution is enabled.",
+                    "fa_icon": "fas fa-file-code"
+                },
+                "rna_barcode_rev_comp": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable reverse complement search for RNA barcode extraction.",
+                    "help_text": "When enabled, searches for barcodes in both forward and reverse complement orientations. Automatically enabled when methylation SNP analysis is running (!skip_methylsnp_analysis).",
+                    "fa_icon": "fas fa-exchange-alt"
+                },
+                "rna_adapter_name": {
+                    "type": "string",
+                    "default": "NNSR",
+                    "description": "Name of the RNA barcode adapter to extract.",
+                    "help_text": "Identifier for the barcode adapter pattern (e.g., NNSR, mNNSR).",
+                    "fa_icon": "fas fa-tag"
+                },
+                "rna_adapter_sequence": {
+                    "type": "string",
+                    "description": "Custom RNA barcode adapter sequence.",
+                    "help_text": "Override the default adapter sequence with a custom one. Leave empty to use config file defaults.",
+                    "fa_icon": "fas fa-dna",
+                    "pattern": "^[ATCGN]*$"
+                },
+                "rna_error_rate": {
+                    "type": "number",
+                    "default": 0.0,
+                    "description": "Maximum error rate for RNA barcode matching.",
+                    "help_text": "Maximum allowed error rate when matching barcodes (0.0 = exact match, 0.1 = 10% mismatch allowed).",
+                    "fa_icon": "fas fa-percentage",
+                    "minimum": 0.0,
+                    "maximum": 0.3
+                },
+                "rna_min_overlap": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum overlap length for RNA barcode detection.",
+                    "help_text": "Minimum number of bases that must overlap for barcode detection.",
+                    "fa_icon": "fas fa-arrows-alt-h",
+                    "minimum": 5,
+                    "maximum": 50
+                },
+                "rna_barcode_action": {
+                    "type": "string",
+                    "default": "lowercase",
+                    "enum": ["lowercase", "uppercase", "trim", "mask"],
+                    "description": "Action to perform on detected RNA barcodes.",
+                    "help_text": "How to handle detected barcodes: lowercase (convert to lowercase), uppercase (convert to uppercase), trim (remove), or mask (replace with N).",
+                    "fa_icon": "fas fa-edit"
+                }
+            }
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome and transcriptome configuration options.",
+            "help_text": "Configure reference files for genome and transcriptome analysis. Supports both remote (GCS) and local file paths, with smart caching and pre-built index options.",
+            "properties": {
+                "skip_methylsnp_analysis": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip methylation SNP analysis.",
+                    "help_text": "When enabled, methylation analysis will be skipped entirely.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "genome_fasta": {
+                    "type": "string",
+                    "default": "gs://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa",
+                    "description": "Path to reference genome FASTA file.",
+                    "help_text": "Can be a local file path or remote GCS URL. Used for DNA/unbarcoded read analysis.",
+                    "fa_icon": "fas fa-file"
+                },
+                "annotation_gtf": {
+                    "type": "string",
+                    "default": "gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
+                    "description": "Path to genome annotation GTF file.",
+                    "help_text": "GTF file containing gene annotations for STAR alignment and feature counting. Can be a local file path or remote GCS URL.",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "transcriptome_fasta": {
+                    "type": "string",
+                    "default": "gs://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa",
+                    "description": "Path to transcriptome FASTA file.",
+                    "help_text": "Can be a local file path or remote GCS URL. Used for RNA/barcoded read analysis.",
+                    "fa_icon": "fas fa-file"
+                },
+                "gtf": {
+                    "type": "string",
+                    "default": "gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
+                    "description": "Path to gene annotation GTF file.",
+                    "help_text": "Gene annotation file for the reference genome. Can be local or remote GCS URL.",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "genome_bowtie2_index": {
+                    "type": "string",
+                    "description": "Path to pre-built genome Bowtie2 index directory.",
+                    "help_text": "If provided, skips genome index building. Directory should contain *.bt2 files.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "transcriptome_bowtie2_index": {
+                    "type": "string",
+                    "description": "Path to pre-built transcriptome Bowtie2 index directory.",
+                    "help_text": "If provided, skips transcriptome index building. Directory should contain *.bt2 files.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "reference_cache_dir": {
+                    "type": "string",
+                    "default": "./references",
+                    "description": "Directory for caching downloaded and built references.",
+                    "help_text": "Where to store downloaded references and built indexes for reuse across runs.",
+                    "fa_icon": "fas fa-database"
+                }
+            }
+        },
+        "variant_calling_options": {
+            "title": "Variant calling options",
+            "type": "object",
+            "fa_icon": "fas fa-search-plus",
+            "description": "Low-frequency variant calling configuration using LoFreq.",
+            "help_text": "LoFreq is specifically designed for calling low-frequency variants from high-coverage sequencing data, making it ideal for detecting rare mutations and subclonal variants.",
+            "properties": {
+                "lofreq_call_indels": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable indel calling in LoFreq.",
+                    "help_text": "When enabled, LoFreq will call insertions and deletions in addition to SNVs. May increase runtime significantly.",
+                    "fa_icon": "fas fa-expand-arrows-alt"
+                },
+                "lofreq_min_cov": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum coverage depth for variant calling.",
+                    "help_text": "Sites with coverage below this threshold will not be considered for variant calling.",
+                    "fa_icon": "fas fa-layer-group",
+                    "minimum": 1
+                },
+                "lofreq_max_depth": {
+                    "type": "integer",
+                    "default": 1000000,
+                    "description": "Maximum coverage depth for variant calling.",
+                    "help_text": "Sites with coverage above this threshold will be downsampled to prevent memory issues.",
+                    "fa_icon": "fas fa-compress-arrows-alt",
+                    "minimum": 1
+                },
+                "lofreq_min_bq": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum base quality for variant calling.",
+                    "help_text": "Bases with quality below this threshold will be ignored. Default changed from 6 to 1 to match proven working implementation.",
+                    "fa_icon": "fas fa-star",
+                    "minimum": 0,
+                    "maximum": 60
+                },
+                "lofreq_min_alt_bq": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum base quality for alternate bases.",
+                    "help_text": "Alternate bases with quality below this threshold will be ignored. Default changed from 6 to 1 to match proven working implementation.",
+                    "fa_icon": "fas fa-star-half-alt",
+                    "minimum": 0,
+                    "maximum": 60
+                },
+                "lofreq_def_alt_bq": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Default alternate base quality.",
+                    "help_text": "Quality to use for alternate bases when no quality is available. Default added based on proven working implementation.",
+                    "fa_icon": "fas fa-adjust",
+                    "minimum": 0,
+                    "maximum": 60
+                },
+                "lofreq_def_ref_bq": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Default reference base quality.",
+                    "help_text": "Quality to use for reference bases when no quality is available. Default added based on proven working implementation.",
+                    "fa_icon": "fas fa-balance-scale",
+                    "minimum": 0,
+                    "maximum": 60
+                },
+                "lofreq_sig": {
+                    "type": "number",
+                    "default": 0.01,
+                    "description": "Significance threshold for variant calling.",
+                    "help_text": "P-value threshold for considering a variant significant. Lower values are more stringent.",
+                    "fa_icon": "fas fa-percentage",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "lofreq_chunk_size": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "Chunk size for parallel processing.",
+                    "help_text": "Controls how many bases are processed in each parallel chunk. Larger values reduce argument list size but may use more memory. Set to 0 to disable chunking.",
+                    "fa_icon": "fas fa-puzzle-piece",
+                    "minimum": 0
+                }
+            }
+        },
+        "institutional_config_options": {
+            "title": "Institutional config options",
+            "type": "object",
+            "fa_icon": "fas fa-university",
+            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
+            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
+            "properties": {
+                "custom_config_version": {
+                    "type": "string",
+                    "description": "Git commit id for Institutional configs.",
+                    "default": "master",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "custom_config_base": {
+                    "type": "string",
+                    "description": "Base directory for Institutional configs.",
+                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "hidden": true,
+                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config name.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_description": {
+                    "type": "string",
+                    "description": "Institutional config description.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_contact": {
+                    "type": "string",
+                    "description": "Institutional config contact information.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_url": {
+                    "type": "string",
+                    "description": "Institutional config URL link.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                }
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+            "properties": {
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
+                    "fa_icon": "fas fa-copy",
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "hidden": true
+                },
+                "email_on_fail": {
+                    "type": "string",
+                    "description": "Email address for completion summary, only when pipeline fails.",
+                    "fa_icon": "fas fa-exclamation-triangle",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
+                    "hidden": true
+                },
+                "plaintext_email": {
+                    "type": "boolean",
+                    "description": "Send plain-text email instead of HTML.",
+                    "fa_icon": "fas fa-remove-format",
+                    "hidden": true
+                },
+                "max_multiqc_email_size": {
+                    "type": "string",
+                    "description": "File size limit when attaching MultiQC reports to summary emails.",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "default": "25.MB",
+                    "fa_icon": "fas fa-file-upload",
+                    "hidden": true
+                },
+                "smtp_host": {
+                    "type": "string",
+                    "description": "SMTP server hostname for email notifications (e.g., smtp.gmail.com, smtp.office365.com).",
+                    "fa_icon": "fas fa-server",
+                    "help_text": "Configure SMTP server for portable email delivery. Can also be set via SMTP_HOST environment variable."
+                },
+                "smtp_port": {
+                    "type": "integer",
+                    "description": "SMTP server port number.",
+                    "default": 587,
+                    "fa_icon": "fas fa-network-wired",
+                    "help_text": "Standard ports: 587 (STARTTLS), 465 (SSL), 25 (unsecured). Can also be set via SMTP_PORT environment variable."
+                },
+                "smtp_user": {
+                    "type": "string",
+                    "description": "SMTP username (usually your email address).",
+                    "fa_icon": "fas fa-user",
+                    "help_text": "Username for SMTP authentication. Falls back to --email parameter if not specified. Can also be set via SMTP_USER environment variable."
+                },
+                "smtp_password": {
+                    "type": "string",
+                    "description": "SMTP password or app password for authentication.",
+                    "fa_icon": "fas fa-key",
+                    "help_text": "For Gmail, use an App Password rather than your regular password. Can also be set via SMTP_PASSWORD environment variable for security."
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Do not use coloured log outputs.",
+                    "fa_icon": "fas fa-palette",
+                    "hidden": true
+                },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Slack or Teams webhook URL for pipeline notifications",
+                    "fa_icon": "fab fa-slack",
+                    "help_text": "Webhook URL for real-time pipeline notifications. Supports Slack (hooks.slack.com) and Microsoft Teams. Automatically detects format based on URL.",
+                    "pattern": "^https?://.*"
+                },
+                "multiqc_config": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
+                },
+                "validate_params": {
+                    "type": "boolean",
+                    "description": "Boolean whether to validate parameters against the schema at runtime",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true
+                },
+                "pipelines_testdata_base_path": {
+                    "type": "string",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Base URL or local path to location of pipeline test dataset files",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "hidden": true
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "fa_icon": "far calendar",
+                    "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/variant_calling_options"
+        },
+        {
+            "$ref": "#/$defs/institutional_config_options"
+        },
+        {
+            "$ref": "#/$defs/generic_options"
+        }
+    ]
+}

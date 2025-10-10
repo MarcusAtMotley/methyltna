@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "read_trimming"
+description: Quality control and trimming workflow for FASTQ reads using FastQC and TrimGalore
+keywords:
+  - quality control
+  - trimming
+  - fastqc
+  - trimgalore
+  - reads
+  - fastq
+components:
+  - fastqc
+  - trimgalore
+input:
+  - ch_reads:
+      type: file
+      description: |
+        The input channel containing the FASTQ files
+        Structure: [ val(meta), [ path(fastq_1), path(fastq_2) ] ]
+      pattern: "*.{fastq,fq}{,.gz}"
+output:
+  - reads:
+      type: file
+      description: |
+        Channel containing trimmed FASTQ files
+        Structure: [ val(meta), [ path(fastq) ] ]
+      pattern: "*.{fastq,fq}.gz"
+  - trimmed_reads:
+      type: file
+      description: |
+        Alias for reads - Channel containing trimmed FASTQ files
+        Structure: [ val(meta), [ path(fastq) ] ]
+      pattern: "*.{fastq,fq}.gz"
+  - fastqc_raw_zip:
+      type: file
+      description: |
+        Channel containing FastQC ZIP files from raw reads
+        Structure: [ val(meta), path(zip) ]
+      pattern: "*_fastqc.zip"
+  - fastqc_raw_html:
+      type: file
+      description: |
+        Channel containing FastQC HTML files from raw reads
+        Structure: [ val(meta), path(html) ]
+      pattern: "*_fastqc.html"
+  - fastqc_trim_zip:
+      type: file
+      description: |
+        Channel containing FastQC ZIP files from trimmed reads
+        Structure: [ val(meta), path(zip) ]
+      pattern: "*_fastqc.zip"
+  - fastqc_trim_html:
+      type: file
+      description: |
+        Channel containing FastQC HTML files from trimmed reads
+        Structure: [ val(meta), path(html) ]
+      pattern: "*_fastqc.html"
+  - trim_log:
+      type: file
+      description: |
+        Channel containing TrimGalore log files
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*_trimming_report.txt"
+  - trim_html:
+      type: file
+      description: |
+        Channel containing TrimGalore HTML files
+        Structure: [ val(meta), path(html) ]
+      pattern: "*.html"
+  - trim_zip:
+      type: file
+      description: |
+        Channel containing TrimGalore ZIP files
+        Structure: [ val(meta), path(zip) ]
+      pattern: "*.zip"
+  - multiqc_files:
+      type: file
+      description: |
+        Channel containing all files for MultiQC aggregation
+        Structure: [ path(files) ]
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@MarcusAtMotley"
+maintainers:
+  - "@MarcusAtMotley"

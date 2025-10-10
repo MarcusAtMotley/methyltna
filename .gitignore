@@ -1,0 +1,20 @@
+.nextflow*
+work/
+data/
+results/
+.DS_Store
+testing/
+testing*
+*.pyc
+null/
+
+# Test outputs and logs
+test_*/
+test*.log
+
+# Reference data (large files)
+references/
+
+# nf-test artifacts
+.nf-test/
+.nf-test.log

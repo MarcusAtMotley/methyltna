@@ -1,0 +1,6 @@
+name: bowtie2_build_index
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bowtie2=2.5.4

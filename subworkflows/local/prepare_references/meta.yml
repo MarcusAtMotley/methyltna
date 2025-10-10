@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/meta-schema.json
+name: "prepare_references"
+description: Smart reference preparation with download and indexing capabilities
+keywords:
+  - reference
+  - genome
+  - transcriptome
+  - index
+  - download
+  - cache
+components:
+  - download_references
+  - bowtie2_build_index
+input: []
+output:
+  - genome_fasta:
+      type: file
+      description: Reference genome FASTA file
+      pattern: "*.{fa,fna,fasta}"
+  - transcriptome_fasta:
+      type: file
+      description: Transcriptome FASTA file
+      pattern: "*.{fa,fna,fasta}"
+  - genome_index:
+      type: file
+      description: Bowtie2 index files for genome
+      pattern: "*.bt2"
+  - transcriptome_index:
+      type: file
+      description: Bowtie2 index files for transcriptome
+      pattern: "*.bt2"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@your-username"
+maintainers:
+  - "@your-username"

@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "download_references"
+description: Download reference genome, GTF, and transcriptome files from GCS bucket
+keywords:
+  - reference
+  - genome
+  - transcriptome
+  - download
+  - gcs
+tools:
+  - "gsutil":
+      description: "Google Cloud Storage utility for downloading files"
+      homepage: "https://cloud.google.com/storage/docs/gsutil"
+
+input: []
+
+output:
+  - genome_fasta:
+      type: file
+      description: Reference genome FASTA file
+      pattern: "*.fa"
+  - gtf:
+      type: file
+      description: Gene annotation GTF file
+      pattern: "*.gtf"
+  - transcriptome_fasta:
+      type: file
+      description: Transcriptome FASTA file
+      pattern: "*.fa"
+  - rsem_index_files:
+      type: directory
+      description: RSEM index files directory
+      pattern: "RSEM_Genome/*"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@your-username"
+maintainers:
+  - "@your-username"

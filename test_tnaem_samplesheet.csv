@@ -1,0 +1,4 @@
+sample,fastq_1,fastq_2
+Ca3-TNA-NNSR_09N,/home/marcus/runs/mot23/DEMUX/Ca3-TNA-NNSR_09N_S21_R1_001.fastq.gz,/home/marcus/runs/mot23/DEMUX/Ca3-TNA-NNSR_09N_S21_R2_001.fastq.gz
+Ca3-RNA-NNSR_09Z,/home/marcus/runs/mot23/DEMUX/Ca3-RNA-NNSR_09Z_S33_R1_001.fastq.gz,/home/marcus/runs/mot23/DEMUX/Ca3-RNA-NNSR_09Z_S33_R2_001.fastq.gz
+Ca3-DNA_09B,/home/marcus/runs/mot23/DEMUX/Ca3-DNA_09B_S9_R1_001.fastq.gz,/home/marcus/runs/mot23/DEMUX/Ca3-DNA_09B_S9_R2_001.fastq.gz

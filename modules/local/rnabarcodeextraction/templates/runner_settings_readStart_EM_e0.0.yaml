@@ -1,0 +1,21 @@
+# runner_settings_readStart_EM_e0.0.yaml
+# Marcus Viscardi - Sept 18, 2025
+# Some simple default settings that appeared to work well for extracting NNSR adapters in EM and non-EM libs
+adapter_name: NNSR
+adapter_sequence: TCCGATCTCT  # The normal NNSR adapter sequence (conversion will happen with the below flags)
+adapter_name2: NNSR2
+adapter_sequence2: TCCGATCTGA  # The normal NNSR adapter sequence (conversion will happen with the below flags)
+anchor_sequence: X  # This forces the adapter to be found right at the start of the read
+max_dist_from_read_start: 22  # This can likely be widely adjusted, but 22 seemed reasonable during early tests. It must work with an anchor_sequence of X
+convert_CtoY: true
+convert_GtoR: true
+error_rate: 0.0  # Keeping this at zero when the conversions are on seems to work best and keep miscalling low
+reverse_complement_search: false
+min_overlap: 10
+action: trim  # This one can be changed to 'lowercase' if you want to keep the adapter sequence in the read
+flip_reads: false
+threads: 12
+extra_params: []
+do_not_make_output_dir: false  # If this is turned on the script will throw an error if the output directory does not exist
+suffix_for_tagged_read_files: barcoded  # This can be changed to 'tagged' if you prefer
+suffix_for_untagged_read_files: unbarcoded  # This can be changed to 'untagged' if you prefer
