@@ -1,4 +1,0 @@
-Sample	Pairs passing filters
-Ca3-DNA_09B_1_val_1_Ca3-DNA_09B_2_val_2	998.0
-Ca3-RNA-NNSR_09Z	992.0
-Ca3-TNA-NNSR_09N_1_val_1_Ca3-TNA-NNSR_09N_2_val_2	992.0

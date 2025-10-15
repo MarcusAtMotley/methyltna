@@ -1,4 +1,0 @@
-Sample	cutadapt_version	pairs_processed	r1_with_adapters	r2_with_adapters	pairs_too_short	pairs_written	bp_processed	bp_written	percent_trimmed
-Ca3-DNA_09B_1_val_1_Ca3-DNA_09B_2_val_2	5.1	998	35	7	0	998	298257	298257	0.0
-Ca3-RNA-NNSR_09Z	5.1	992	769	648	0	992	291544	291544	0.0
-Ca3-TNA-NNSR_09N_1_val_1_Ca3-TNA-NNSR_09N_2_val_2	5.1	992	145	123	0	992	295428	295428	0.0

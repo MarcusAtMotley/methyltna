@@ -1,4 +1,0 @@
-Sample	ff: Watson-Aligned, Watson-Bisulfite Conversion	rr: Crick-Aligned, Crick-Bisulfite Conversion
-Ca3-DNA_09B_unbarcoded	493.0	475.0
-Ca3-RNA-NNSR_09Z_unbarcoded	37.0	39.0
-Ca3-TNA-NNSR_09N_unbarcoded	430.0	385.0

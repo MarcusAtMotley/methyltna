@@ -1,5 +1,0 @@
-BISCUITqc Read Duplication Table
-Number of duplicate reads:	6
-Number of reads:	137
-Number of duplicate q40-reads:	4
-Number of q40-reads:	113

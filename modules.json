@@ -55,9 +55,19 @@
                         "git_sha": "8c0cf1994231ad6bb5c214db709ad9bf70aa318e",
                         "installed_by": ["modules"]
                     },
+                    "mosdepth": {
+                        "branch": "master",
+                        "git_sha": "2cd32e2448fb70ed1e1ab3143cee7dbdbede7271",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "e10b76ca0c66213581bec2833e30d31f239dec0b",
+                        "installed_by": ["modules"]
+                    },
+                    "ngscheckmate/ncm": {
+                        "branch": "master",
+                        "git_sha": "5e3fd0cbb85bdfaaafdc23e8070eaebea8b93814",
                         "installed_by": ["modules"]
                     },
                     "picard/markduplicates": {

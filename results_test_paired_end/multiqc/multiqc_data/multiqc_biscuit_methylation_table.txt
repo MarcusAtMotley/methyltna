@@ -1,4 +1,0 @@
-Sample	CpG Sites	CpG Methylation (%)	CHG Sites	CHG Methylation (%)	CHH Sites	CHH Methylation (%)
-Ca3-DNA_09B_unbarcoded	0	0	9831	0.07	30582	0.1
-Ca3-RNA-NNSR_09Z_unbarcoded	0	0	322	89.75	848	87.15
-Ca3-TNA-NNSR_09N_unbarcoded	0	0	8867	0.89	26668	0.74

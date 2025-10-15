@@ -1,3 +1,0 @@
-BISCUITqc Conversion Rate by Read Average Table
-CpA	CpC	CpG	CpT
-0.01003931	0.00977836	0.67407407	0.00798176

@@ -1,4 +1,0 @@
-Sample	Assigned	Unassigned: Unmapped	Unassigned: Multi Mapping	Unassigned: No Features	Unassigned: Ambiguity
-Ca3-DNA_09B_barcoded	0.0	84.0	0.0	0.0	0.0
-Ca3-RNA-NNSR_09Z_barcoded	1161.0	449.0	428.0	32.0	134.0
-Ca3-TNA-NNSR_09N_barcoded	189.0	148.0	38.0	6.0	21.0

@@ -16,6 +16,7 @@ include { SAMTOOLS_IDXSTATS      } from '../modules/nf-core/samtools/idxstats/ma
 include { SUBREAD_FEATURECOUNTS  } from '../modules/nf-core/subread/featurecounts/main'
 include { BISCUIT_ALIGN          } from '../modules/nf-core/biscuit/align/main'
 include { PICARD_MARKDUPLICATES  } from '../modules/nf-core/picard/markduplicates/main'
+include { MOSDEPTH               } from '../modules/nf-core/mosdepth/main'
 include { BISCUIT_PILEUP         } from '../modules/nf-core/biscuit/pileup/main'
 include { BISCUIT_QC             } from '../modules/nf-core/biscuit/qc/main'
 include { LOFREQ_VARIANT_CALLING as LOFREQ_RNA } from '../subworkflows/local/lofreq_variant_calling/main'
@@ -24,7 +25,7 @@ include { BISCUIT_METHYLATION_SUMMARY } from '../modules/local/biscuit_methylati
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_modulestesting_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_methyltna_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,6 +222,17 @@ workflow METHYLTNA {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_IDXSTATS.out.idxstats.collect{it[1]})
+
+    //
+    // MODULE: Mosdepth coverage analysis for DNA reads
+    //
+    MOSDEPTH(
+        PICARD_MARKDUPLICATES.out.bam.join(PICARD_MARKDUPLICATES.out.bai, by: [0]).map { meta, bam, bai -> [meta, bam, bai, []] },
+        ch_genome_fasta
+    )
+    ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.global_txt.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.summary_txt.collect{it[1]})
 
     //
     // MODULE: Biscuit pileup for methylation calling and variant detection
