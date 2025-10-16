@@ -23,6 +23,7 @@ workflow PREPARE_REFERENCES {
     // Extract filenames from URLs for cache checking (genome-agnostic)
     def genome_filename = params.genome_fasta.tokenize('/').last()
     def gtf_filename = params.annotation_gtf.tokenize('/').last()
+    def genome_id = genome_filename.replaceAll(/\.fa(sta)?$/, '')
 
     // Check for locally cached files
     def genome_cached = file("${params.reference_cache_dir}/fasta/${genome_filename}").exists()
@@ -51,9 +52,9 @@ workflow PREPARE_REFERENCES {
 
     if (need_cloud_download) {
         //
-        // MODULE: Check cloud cache and download if available
+        // MODULE: Check cloud cache and download if available (FASTA, GTF, and all indexes)
         //
-        DOWNLOAD_CLOUD_CACHE(genome_filename, gtf_filename)
+        DOWNLOAD_CLOUD_CACHE(genome_filename, gtf_filename, genome_id)
         ch_versions = ch_versions.mix(DOWNLOAD_CLOUD_CACHE.out.versions)
 
         // Use cloud cache outputs if available, otherwise will fall back to original source
@@ -103,8 +104,7 @@ workflow PREPARE_REFERENCES {
         }
     }
 
-    // Build or use STAR genome index - check local cache, then cloud cache, then build
-    def genome_id = genome_filename.replaceAll(/\.fa(sta)?$/, '')
+    // Build or use STAR genome index - check local cache (which may have been populated by cloud download)
     def star_index_dir = "${params.reference_cache_dir}/star_indexes/${genome_id}"
     def star_index_exists = file("${star_index_dir}").exists() &&
                             file("${star_index_dir}/Genome").exists()
@@ -134,7 +134,7 @@ workflow PREPARE_REFERENCES {
     }
 
 
-    // Build or use Bowtie2 genome index - check for cached indexes first
+    // Build or use Bowtie2 genome index - check local cache (which may have been populated by cloud download)
     def bowtie2_index_dir = "${params.reference_cache_dir}/bowtie2_indexes/${genome_id}"
     def bowtie2_index_exists = file("${bowtie2_index_dir}").exists() &&
                                 file("${bowtie2_index_dir}").list().any { it.endsWith('.bt2') }
@@ -157,7 +157,7 @@ workflow PREPARE_REFERENCES {
     }
 
 
-    // Build or use Biscuit genome index - check for cached indexes first
+    // Build or use Biscuit genome index - check local cache (which may have been populated by cloud download)
     def biscuit_index_dir = "${params.reference_cache_dir}/biscuit_indexes/${genome_id}"
     def biscuit_index_exists = file("${biscuit_index_dir}").exists() &&
                                 file("${biscuit_index_dir}/${genome_filename}.dau.bwt").exists()
