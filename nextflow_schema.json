@@ -229,6 +229,14 @@
                     "description": "Directory for caching downloaded and built references.",
                     "help_text": "Where to store downloaded references and built indexes for reuse across runs.",
                     "fa_icon": "fas fa-database"
+                },
+                "cloud_reference_cache": {
+                    "type": "string",
+                    "default": "gs://motleybio/Workspaces/Marcus/methyltna_references",
+                    "description": "Cloud storage location for backup reference cache.",
+                    "help_text": "GCS bucket path containing pre-downloaded references and pre-built indexes. Pipeline will check here before downloading from original sources, significantly speeding up reference preparation in new environments.",
+                    "fa_icon": "fas fa-cloud",
+                    "pattern": "^gs://.*"
                 }
             }
         },
