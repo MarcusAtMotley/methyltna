@@ -25,14 +25,21 @@ workflow PREPARE_REFERENCES {
     def gtf_filename = params.annotation_gtf.tokenize('/').last()
     def genome_id = genome_filename.replaceAll(/\.fa(sta)?$/, '')
 
-    // Check for locally cached files
+    // Check for locally cached files and indexes
     def genome_cached = file("${params.reference_cache_dir}/fasta/${genome_filename}").exists()
     def gtf_cached = file("${params.reference_cache_dir}/${gtf_filename}").exists()
+    def star_index_cached = file("${params.reference_cache_dir}/star_indexes/${genome_id}").exists() &&
+                            file("${params.reference_cache_dir}/star_indexes/${genome_id}/Genome").exists()
+    def biscuit_index_cached = file("${params.reference_cache_dir}/biscuit_indexes/${genome_id}").exists() &&
+                               file("${params.reference_cache_dir}/biscuit_indexes/${genome_id}/${genome_filename}.dau.bwt").exists()
+    def bowtie2_index_cached = file("${params.reference_cache_dir}/bowtie2_indexes/${genome_id}").exists() &&
+                               file("${params.reference_cache_dir}/bowtie2_indexes/${genome_id}").list().any { it.endsWith('.bt2') }
 
     // Determine if we need to download based on cache status, provided paths, and force flags
     def need_download = false
     def need_cloud_download = false
 
+    // Check if we need FASTA/GTF from cloud or original source
     if (params.genome_fasta.startsWith('gs://') && (!genome_cached || params.force_redownload_references)) {
         // Check if available in cloud cache before downloading from original source
         if (!params.force_redownload_references && params.cloud_reference_cache) {
@@ -47,6 +54,13 @@ workflow PREPARE_REFERENCES {
             need_cloud_download = true
         } else {
             need_download = true
+        }
+    }
+
+    // Also check if any indexes are missing and cloud cache is available
+    if (!params.force_rebuild_indexes && params.cloud_reference_cache) {
+        if (!star_index_cached || !biscuit_index_cached || !bowtie2_index_cached) {
+            need_cloud_download = true
         }
     }
 
