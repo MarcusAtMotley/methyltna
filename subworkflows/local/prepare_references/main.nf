@@ -5,6 +5,7 @@
 //
 
 include { DOWNLOAD_REFERENCES } from '../../../modules/local/download_references/main'
+include { DOWNLOAD_CLOUD_CACHE } from '../../../modules/local/download_cloud_cache/main'
 include { STAR_GENOMEGENERATE } from '../../../modules/nf-core/star/genomegenerate/main'
 include { BOWTIE2_BUILD } from '../../../modules/nf-core/bowtie2/build/main'
 include { BISCUIT_INDEX } from '../../../modules/nf-core/biscuit/index/main'
@@ -23,22 +24,60 @@ workflow PREPARE_REFERENCES {
     def genome_filename = params.genome_fasta.tokenize('/').last()
     def gtf_filename = params.annotation_gtf.tokenize('/').last()
 
-    // Check for cached files first, then remote URLs
+    // Check for locally cached files
     def genome_cached = file("${params.reference_cache_dir}/fasta/${genome_filename}").exists()
     def gtf_cached = file("${params.reference_cache_dir}/${gtf_filename}").exists()
 
     // Determine if we need to download based on cache status, provided paths, and force flags
     def need_download = false
+    def need_cloud_download = false
+
     if (params.genome_fasta.startsWith('gs://') && (!genome_cached || params.force_redownload_references)) {
-        need_download = true
+        // Check if available in cloud cache before downloading from original source
+        if (!params.force_redownload_references && params.cloud_reference_cache) {
+            need_cloud_download = true
+        } else {
+            need_download = true
+        }
     }
     if (params.annotation_gtf.startsWith('gs://') && (!gtf_cached || params.force_redownload_references)) {
-        need_download = true
+        // Check if available in cloud cache before downloading from original source
+        if (!params.force_redownload_references && params.cloud_reference_cache) {
+            need_cloud_download = true
+        } else {
+            need_download = true
+        }
+    }
+
+    if (need_cloud_download) {
+        //
+        // MODULE: Check cloud cache and download if available
+        //
+        DOWNLOAD_CLOUD_CACHE(genome_filename, gtf_filename)
+        ch_versions = ch_versions.mix(DOWNLOAD_CLOUD_CACHE.out.versions)
+
+        // Use cloud cache outputs if available, otherwise will fall back to original source
+        ch_genome_fasta = DOWNLOAD_CLOUD_CACHE.out.genome_fasta
+            .ifEmpty{ file("${params.reference_cache_dir}/fasta/${genome_filename}") }
+            .map { fasta -> [[id:'genome'], fasta] }
+
+        ch_annotation_gtf = DOWNLOAD_CLOUD_CACHE.out.gtf
+            .ifEmpty{ file("${params.reference_cache_dir}/${gtf_filename}") }
+            .map { gtf -> [[id:'annotation'], gtf] }
+
+        // Check if cloud download succeeded
+        genome_cached = file("${params.reference_cache_dir}/fasta/${genome_filename}").exists()
+        gtf_cached = file("${params.reference_cache_dir}/${gtf_filename}").exists()
+
+        // If still not cached after cloud attempt, need to download from original source
+        if (!genome_cached || !gtf_cached) {
+            need_download = true
+        }
     }
 
     if (need_download) {
         //
-        // MODULE: Download references from GCS if not cached locally
+        // MODULE: Download references from original GCS source if not in cache
         //
         DOWNLOAD_REFERENCES()
         ch_versions = ch_versions.mix(DOWNLOAD_REFERENCES.out.versions)
@@ -64,7 +103,7 @@ workflow PREPARE_REFERENCES {
         }
     }
 
-    // Build or use STAR genome index - check for cached indexes first
+    // Build or use STAR genome index - check local cache, then cloud cache, then build
     def genome_id = genome_filename.replaceAll(/\.fa(sta)?$/, '')
     def star_index_dir = "${params.reference_cache_dir}/star_indexes/${genome_id}"
     def star_index_exists = file("${star_index_dir}").exists() &&
@@ -75,12 +114,12 @@ workflow PREPARE_REFERENCES {
         ch_star_index = Channel.fromPath(params.star_index)
             .map { dir -> [[id:'genome'], dir] }
     } else if (star_index_exists && !params.force_rebuild_indexes) {
-        // Use cached STAR index
+        // Use locally cached STAR index
         ch_star_index = Channel.fromPath(star_index_dir)
             .map { dir -> [[id:'genome'], dir] }
     } else {
         //
-        // MODULE: Build STAR genome index
+        // MODULE: Build STAR genome index (cloud cache not available or download failed)
         //
         // Add genome_id to meta for publishDir path
         def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
