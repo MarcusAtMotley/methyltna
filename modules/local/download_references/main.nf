@@ -3,9 +3,7 @@ process DOWNLOAD_REFERENCES {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'biocontainers/gcloud:498.0.0':
-        'quay.io/biocontainers/gcloud:498.0.0' }"
+    container 'docker://google/cloud-sdk:alpine'
 
     // Cache reference files to avoid re-downloading
     publishDir "${params.reference_cache_dir}/fasta", mode: params.publish_dir_mode, pattern: "*.fa"
