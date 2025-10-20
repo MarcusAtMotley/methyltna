@@ -7,7 +7,6 @@
 include { DOWNLOAD_REFERENCES } from '../../../modules/local/download_references/main'
 include { DOWNLOAD_CLOUD_CACHE } from '../../../modules/local/download_cloud_cache/main'
 include { STAR_GENOMEGENERATE } from '../../../modules/nf-core/star/genomegenerate/main'
-include { BOWTIE2_BUILD } from '../../../modules/nf-core/bowtie2/build/main'
 include { BISCUIT_INDEX } from '../../../modules/nf-core/biscuit/index/main'
 include { SAMTOOLS_FAIDX as SAMTOOLS_FAIDX_GENOME } from '../../../modules/nf-core/samtools/faidx/main'
 
@@ -32,8 +31,6 @@ workflow PREPARE_REFERENCES {
                             file("${params.reference_cache_dir}/star_indexes/${genome_id}/Genome").exists()
     def biscuit_index_cached = file("${params.reference_cache_dir}/biscuit_indexes/${genome_id}").exists() &&
                                file("${params.reference_cache_dir}/biscuit_indexes/${genome_id}/${genome_filename}.dau.bwt").exists()
-    def bowtie2_index_cached = file("${params.reference_cache_dir}/bowtie2_indexes/${genome_id}").exists() &&
-                               file("${params.reference_cache_dir}/bowtie2_indexes/${genome_id}").list().any { it.endsWith('.bt2') }
 
     // Determine if we need to download based on cache status, provided paths, and force flags
     def need_download = false
@@ -59,10 +56,14 @@ workflow PREPARE_REFERENCES {
 
     // Also check if any indexes are missing and cloud cache is available
     if (!params.force_rebuild_indexes && params.cloud_reference_cache) {
-        if (!star_index_cached || !biscuit_index_cached || !bowtie2_index_cached) {
+        if (!star_index_cached || !biscuit_index_cached) {
             need_cloud_download = true
         }
     }
+
+    // Placeholder channels for indexes that will be conditionally filled
+    ch_star_index_from_cloud = Channel.empty()
+    ch_biscuit_index_from_cloud = Channel.empty()
 
     if (need_cloud_download) {
         //
@@ -79,6 +80,12 @@ workflow PREPARE_REFERENCES {
         ch_annotation_gtf = DOWNLOAD_CLOUD_CACHE.out.gtf
             .ifEmpty{ file("${params.reference_cache_dir}/${gtf_filename}") }
             .map { gtf -> [[id:'annotation'], gtf] }
+
+        // Get index channels from cloud download (may be empty if not found)
+        ch_star_index_from_cloud = DOWNLOAD_CLOUD_CACHE.out.star_index
+            .map { dir -> [[id:'genome'], dir] }
+        ch_biscuit_index_from_cloud = DOWNLOAD_CLOUD_CACHE.out.biscuit_index
+            .map { dir -> [[id:'genome'], dir] }
 
         // Check if cloud download succeeded
         genome_cached = file("${params.reference_cache_dir}/fasta/${genome_filename}").exists()
@@ -118,7 +125,7 @@ workflow PREPARE_REFERENCES {
         }
     }
 
-    // Build or use STAR genome index - check local cache (which may have been populated by cloud download)
+    // Build or use STAR genome index - use cloud-downloaded, cached, user-provided, or build
     def star_index_dir = "${params.reference_cache_dir}/star_indexes/${genome_id}"
     def star_index_exists = file("${star_index_dir}").exists() &&
                             file("${star_index_dir}/Genome").exists()
@@ -127,13 +134,13 @@ workflow PREPARE_REFERENCES {
         // User provided explicit STAR index path
         ch_star_index = Channel.fromPath(params.star_index)
             .map { dir -> [[id:'genome'], dir] }
-    } else if (star_index_exists && !params.force_rebuild_indexes) {
-        // Use locally cached STAR index
-        ch_star_index = Channel.fromPath(star_index_dir)
-            .map { dir -> [[id:'genome'], dir] }
+    } else if (!ch_star_index_from_cloud.ifEmpty(null) || (star_index_exists && !params.force_rebuild_indexes)) {
+        // Use cloud-downloaded or locally cached STAR index
+        ch_star_index = ch_star_index_from_cloud
+            .ifEmpty(Channel.fromPath(star_index_dir).map { dir -> [[id:'genome'], dir] })
     } else {
         //
-        // MODULE: Build STAR genome index (cloud cache not available or download failed)
+        // MODULE: Build STAR genome index (not in cloud or local cache)
         //
         // Add genome_id to meta for publishDir path
         def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
@@ -148,30 +155,7 @@ workflow PREPARE_REFERENCES {
     }
 
 
-    // Build or use Bowtie2 genome index - check local cache (which may have been populated by cloud download)
-    def bowtie2_index_dir = "${params.reference_cache_dir}/bowtie2_indexes/${genome_id}"
-    def bowtie2_index_exists = file("${bowtie2_index_dir}").exists() &&
-                                file("${bowtie2_index_dir}").list().any { it.endsWith('.bt2') }
-
-    if (params.bowtie2_index != null) {
-        // User provided explicit Bowtie2 index path
-        ch_bowtie2_index = Channel.fromPath(params.bowtie2_index)
-            .map { dir -> [[id:'genome'], dir] }
-    } else if (bowtie2_index_exists && !params.force_rebuild_indexes) {
-        // Use cached Bowtie2 index
-        ch_bowtie2_index = Channel.fromPath(bowtie2_index_dir)
-            .map { dir -> [[id:'genome'], dir] }
-    } else {
-        //
-        // MODULE: Build Bowtie2 genome index
-        //
-        BOWTIE2_BUILD(ch_genome_fasta)
-        ch_bowtie2_index = BOWTIE2_BUILD.out.index
-        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-    }
-
-
-    // Build or use Biscuit genome index - check local cache (which may have been populated by cloud download)
+    // Build or use Biscuit genome index - use cloud-downloaded, cached, user-provided, or build
     def biscuit_index_dir = "${params.reference_cache_dir}/biscuit_indexes/${genome_id}"
     def biscuit_index_exists = file("${biscuit_index_dir}").exists() &&
                                 file("${biscuit_index_dir}/${genome_filename}.dau.bwt").exists()
@@ -180,13 +164,13 @@ workflow PREPARE_REFERENCES {
         // User provided explicit Biscuit index path
         ch_biscuit_index = Channel.fromPath(params.biscuit_index)
             .map { dir -> [[id:'genome'], dir] }
-    } else if (biscuit_index_exists && !params.force_rebuild_indexes) {
-        // Use cached Biscuit index
-        ch_biscuit_index = Channel.fromPath(biscuit_index_dir)
-            .map { dir -> [[id:'genome'], dir] }
+    } else if (!ch_biscuit_index_from_cloud.ifEmpty(null) || (biscuit_index_exists && !params.force_rebuild_indexes)) {
+        // Use cloud-downloaded or locally cached Biscuit index
+        ch_biscuit_index = ch_biscuit_index_from_cloud
+            .ifEmpty(Channel.fromPath(biscuit_index_dir).map { dir -> [[id:'genome'], dir] })
     } else {
         //
-        // MODULE: Build Biscuit genome index
+        // MODULE: Build Biscuit genome index (not in cloud or local cache)
         //
         // Add genome_id to meta for publishDir path
         def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
@@ -225,7 +209,6 @@ workflow PREPARE_REFERENCES {
     genome_fasta        = ch_genome_fasta              // channel: [meta, genome.fa]
     annotation_gtf      = ch_annotation_gtf            // channel: [meta, annotation.gtf]
     star_index          = ch_star_index                // channel: [meta, star_index_dir]
-    bowtie2_index       = ch_bowtie2_index             // channel: [meta, bowtie2_index_dir]
     biscuit_index       = ch_biscuit_index             // channel: [meta, biscuit_index_dir]
     genome_fai          = ch_genome_fai                // channel: [meta, genome.fa.fai]
     versions            = ch_versions                  // channel: [versions.yml]
