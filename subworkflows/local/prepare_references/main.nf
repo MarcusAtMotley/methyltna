@@ -55,8 +55,10 @@ workflow PREPARE_REFERENCES {
     }
 
     // Also check if any indexes are missing and cloud cache is available
+    // BUT ONLY if user hasn't provided explicit index paths
     if (!params.force_rebuild_indexes && params.cloud_reference_cache) {
-        if (!star_index_cached || !biscuit_index_cached) {
+        if ((params.star_index == null && !star_index_cached) ||
+            (params.biscuit_index == null && !biscuit_index_cached)) {
             need_cloud_download = true
         }
     }

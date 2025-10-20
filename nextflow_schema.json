@@ -211,17 +211,33 @@
                     "help_text": "Gene annotation file for the reference genome. Can be local or remote GCS URL.",
                     "fa_icon": "fas fa-file-alt"
                 },
-                "genome_bowtie2_index": {
+                "star_index": {
                     "type": "string",
-                    "description": "Path to pre-built genome Bowtie2 index directory.",
-                    "help_text": "If provided, skips genome index building. Directory should contain *.bt2 files.",
+                    "format": "directory-path",
+                    "description": "Path to pre-built STAR genome index directory.",
+                    "help_text": "If provided, skips STAR index building and uses the existing index. Directory should contain STAR index files (Genome, SA, SAindex, etc.). Significantly speeds up pipeline execution when using the same genome repeatedly.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "transcriptome_bowtie2_index": {
+                "biscuit_index": {
                     "type": "string",
-                    "description": "Path to pre-built transcriptome Bowtie2 index directory.",
-                    "help_text": "If provided, skips transcriptome index building. Directory should contain *.bt2 files.",
+                    "format": "directory-path",
+                    "description": "Path to pre-built Biscuit genome index directory.",
+                    "help_text": "If provided, skips Biscuit index building and uses the existing index for methylation analysis. Directory should contain Biscuit index files (*.dau.bwt, *.dau.sa, etc.).",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "force_rebuild_indexes": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Force rebuilding of indexes even if cached versions exist.",
+                    "help_text": "When enabled, ignores cached STAR and Biscuit indexes and rebuilds them from scratch. Useful when index parameters have changed.",
+                    "fa_icon": "fas fa-sync-alt"
+                },
+                "force_redownload_references": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Force re-downloading of reference files even if cached versions exist.",
+                    "help_text": "When enabled, re-downloads FASTA and GTF files from cloud sources even if local cached versions exist. Useful for updating to newer reference versions.",
+                    "fa_icon": "fas fa-download"
                 },
                 "reference_cache_dir": {
                     "type": "string",
