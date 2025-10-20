@@ -34,6 +34,32 @@ process DOWNLOAD_CLOUD_CACHE {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 
+    # CRITICAL: Check authentication first - fail loudly if not authenticated
+    echo "🔐 Verifying cloud storage authentication..."
+    if ! gsutil ls "${params.cloud_reference_cache}/" >/dev/null 2>&1; then
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "❌ FATAL ERROR: Cannot access cloud storage"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "Cloud storage fallback is enabled but authentication failed."
+        echo "This would cause the pipeline to waste HOURS rebuilding indexes"
+        echo "instead of downloading them in minutes."
+        echo ""
+        echo "⚠️  REFUSING TO CONTINUE - Please authenticate first:"
+        echo ""
+        echo "    gcloud auth login --no-launch-browser"
+        echo ""
+        echo "Or disable cloud cache with:"
+        echo ""
+        echo "    --cloud_reference_cache null"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        exit 1
+    fi
+    echo "      ✓ Authentication successful"
+    echo ""
+
     # Download genome FASTA if not already cached locally
     if [ ! -f "${params.reference_cache_dir}/fasta/${genome_filename}" ]; then
         echo "[1/4] Checking for genome FASTA: ${genome_filename}"
