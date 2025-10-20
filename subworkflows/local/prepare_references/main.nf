@@ -137,7 +137,6 @@ workflow PREPARE_REFERENCES {
         // Priority 2-4: Cloud download > Local cache > Build from scratch
         // Use .ifEmpty() to create runtime dependency chain
         ch_star_index = ch_star_index_from_cloud
-            .map { dir -> [[id:'genome'], dir] }
             .ifEmpty {
                 // Cloud didn't provide - check local cache at runtime
                 def star_cached = file("${star_index_dir}").exists() &&
@@ -174,7 +173,6 @@ workflow PREPARE_REFERENCES {
         // Priority 2-4: Cloud download > Local cache > Build from scratch
         // Use .ifEmpty() to create runtime dependency chain
         ch_biscuit_index = ch_biscuit_index_from_cloud
-            .map { dir -> [[id:'genome'], dir] }
             .ifEmpty {
                 // Cloud didn't provide - check local cache at runtime
                 def biscuit_cached = file("${biscuit_index_dir}").exists() &&
