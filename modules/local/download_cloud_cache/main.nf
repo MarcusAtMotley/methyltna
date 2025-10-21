@@ -8,8 +8,8 @@ process DOWNLOAD_CLOUD_CACHE {
     // Cache reference files locally
     publishDir "${params.reference_cache_dir}/fasta", mode: params.publish_dir_mode, pattern: "*.fa"
     publishDir "${params.reference_cache_dir}", mode: params.publish_dir_mode, pattern: "*.gtf"
-    publishDir "${params.reference_cache_dir}", mode: params.publish_dir_mode, pattern: "star_indexes"
-    publishDir "${params.reference_cache_dir}", mode: params.publish_dir_mode, pattern: "biscuit_indexes"
+    publishDir "${params.reference_cache_dir}", mode: params.publish_dir_mode, pattern: "star_indexes/**"
+    publishDir "${params.reference_cache_dir}", mode: params.publish_dir_mode, pattern: "biscuit_indexes/**"
 
     input:
     val genome_filename
