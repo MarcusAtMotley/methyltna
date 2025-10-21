@@ -41,6 +41,12 @@ def parse_biscuit_vcf(vcf_path):
 
                 context = cx_match[0].split('=')[1]
 
+                # Map Biscuit VCF context codes to display names
+                # Biscuit uses: CG, CHG, CHH
+                # Display uses: CpG, CHG, CHH (the 'p' represents phosphodiester bond)
+                context_map = {'CG': 'CpG', 'CHG': 'CHG', 'CHH': 'CHH'}
+                display_context = context_map.get(context, context)
+
                 # Extract beta value (methylation level) from FORMAT field
                 # BT field is the beta value (methylation level 0-1)
                 format_fields = fields[8].split(':')
@@ -50,9 +56,9 @@ def parse_biscuit_vcf(vcf_path):
                     bt_idx = format_fields.index('BT')
                     beta_value = float(sample_fields[bt_idx])
 
-                    if context in stats:
-                        stats[context]['total'] += 1
-                        stats[context]['methylated_sum'] += beta_value
+                    if display_context in stats:
+                        stats[display_context]['total'] += 1
+                        stats[display_context]['methylated_sum'] += beta_value
                 except (ValueError, IndexError):
                     continue
 
