@@ -135,31 +135,38 @@ workflow PREPARE_REFERENCES {
         // Priority 1: User provided explicit STAR index path
         ch_star_index = Channel.fromPath(params.star_index)
             .map { dir -> [[id:'genome'], dir] }
-    } else {
-        // Priority 2-4: Cloud download > Local cache > Build from scratch
-        // Use .ifEmpty() to create runtime dependency chain
+    } else if (star_index_cached && !params.force_rebuild_indexes) {
+        // Priority 2: Use local cache (check at DAG construction time)
+        ch_star_index = Channel.fromPath(star_index_dir)
+            .map { dir -> [[id:'genome'], dir] }
+    } else if (need_cloud_download && params.cloud_reference_cache) {
+        // Priority 3: Try cloud download first, fall back to building
+        def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
+            [meta + [genome_id: genome_id], fasta]
+        }
+        def ch_gtf_with_id = ch_annotation_gtf.map { meta, gtf ->
+            [meta + [genome_id: genome_id], gtf]
+        }
+
         ch_star_index = ch_star_index_from_cloud
             .ifEmpty {
-                // Cloud didn't provide - check local cache at runtime
-                def star_cached = file("${star_index_dir}").exists() &&
-                                  file("${star_index_dir}/Genome").exists()
-
-                if (star_cached && !params.force_rebuild_indexes) {
-                    // Priority 3: Use local cache
-                    Channel.fromPath(star_index_dir).map { dir -> [[id:'genome'], dir] }
-                } else {
-                    // Priority 4: Build from scratch
-                    def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
-                        [meta + [genome_id: genome_id], fasta]
-                    }
-                    def ch_gtf_with_id = ch_annotation_gtf.map { meta, gtf ->
-                        [meta + [genome_id: genome_id], gtf]
-                    }
-                    STAR_GENOMEGENERATE(ch_genome_with_id, ch_gtf_with_id)
-                    ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
-                    STAR_GENOMEGENERATE.out.index
-                }
+                // Cloud didn't provide - build from scratch
+                STAR_GENOMEGENERATE(ch_genome_with_id, ch_gtf_with_id)
+                STAR_GENOMEGENERATE.out.index
             }
+        // Mix versions outside the closure to avoid concurrent modification
+        ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions.ifEmpty(Channel.empty()))
+    } else {
+        // Priority 4: Build from scratch
+        def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
+            [meta + [genome_id: genome_id], fasta]
+        }
+        def ch_gtf_with_id = ch_annotation_gtf.map { meta, gtf ->
+            [meta + [genome_id: genome_id], gtf]
+        }
+        STAR_GENOMEGENERATE(ch_genome_with_id, ch_gtf_with_id)
+        ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+        ch_star_index = STAR_GENOMEGENERATE.out.index
     }
 
 
@@ -171,28 +178,32 @@ workflow PREPARE_REFERENCES {
         // Priority 1: User provided explicit Biscuit index path
         ch_biscuit_index = Channel.fromPath(params.biscuit_index)
             .map { dir -> [[id:'genome'], dir] }
-    } else {
-        // Priority 2-4: Cloud download > Local cache > Build from scratch
-        // Use .ifEmpty() to create runtime dependency chain
+    } else if (biscuit_index_cached && !params.force_rebuild_indexes) {
+        // Priority 2: Use local cache (check at DAG construction time)
+        ch_biscuit_index = Channel.fromPath(biscuit_index_dir)
+            .map { dir -> [[id:'genome'], dir] }
+    } else if (need_cloud_download && params.cloud_reference_cache) {
+        // Priority 3: Try cloud download first, fall back to building
+        def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
+            [meta + [genome_id: genome_id], fasta]
+        }
+
         ch_biscuit_index = ch_biscuit_index_from_cloud
             .ifEmpty {
-                // Cloud didn't provide - check local cache at runtime
-                def biscuit_cached = file("${biscuit_index_dir}").exists() &&
-                                     file("${biscuit_index_dir}/${genome_filename}.dau.bwt").exists()
-
-                if (biscuit_cached && !params.force_rebuild_indexes) {
-                    // Priority 3: Use local cache
-                    Channel.fromPath(biscuit_index_dir).map { dir -> [[id:'genome'], dir] }
-                } else {
-                    // Priority 4: Build from scratch
-                    def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
-                        [meta + [genome_id: genome_id], fasta]
-                    }
-                    BISCUIT_INDEX(ch_genome_with_id)
-                    ch_versions = ch_versions.mix(BISCUIT_INDEX.out.versions)
-                    BISCUIT_INDEX.out.index
-                }
+                // Cloud didn't provide - build from scratch
+                BISCUIT_INDEX(ch_genome_with_id)
+                BISCUIT_INDEX.out.index
             }
+        // Mix versions outside the closure to avoid concurrent modification
+        ch_versions = ch_versions.mix(BISCUIT_INDEX.out.versions.ifEmpty(Channel.empty()))
+    } else {
+        // Priority 4: Build from scratch
+        def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
+            [meta + [genome_id: genome_id], fasta]
+        }
+        BISCUIT_INDEX(ch_genome_with_id)
+        ch_versions = ch_versions.mix(BISCUIT_INDEX.out.versions)
+        ch_biscuit_index = BISCUIT_INDEX.out.index
     }
 
 
