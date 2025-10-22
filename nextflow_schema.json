@@ -45,6 +45,13 @@
                     "help_text": "Choose between bclconvert (default, newer) or bcl2fastq (legacy) for demultiplexing BCL files.",
                     "fa_icon": "fas fa-cogs"
                 },
+                "bcl_no_lane_splitting": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable lane splitting during BCL demultiplexing.",
+                    "help_text": "When enabled, BCL Convert will output all lanes of a flow cell to the same FASTQ files consecutively instead of creating separate files per lane. Useful for flow cells without fluidic boundaries between lanes. Note: Only supported when no 'Lane' column is specified in the sample sheet.",
+                    "fa_icon": "fas fa-layer-group"
+                },
                 "skip_trimming": {
                     "type": "boolean",
                     "default": false,
