@@ -21,6 +21,13 @@ nextflow run . -profile test,docker --outdir results
 # Production run with custom samplesheet
 nextflow run . -profile docker --input samplesheet.csv --outdir results
 
+# BCL demultiplexing with sample filtering (mixed flowcells)
+nextflow run . -profile singularity \
+  --bcl_input_dir /path/to/bcl \
+  --bcl_samplesheet SampleSheet.csv \
+  --sample_filter_regex ".*TNA.*" \
+  --outdir results
+
 # Available profiles: test, docker, singularity, conda, mamba, apptainer
 ```
 
@@ -448,6 +455,65 @@ nextflow run . --hook_url "https://outlook.office.com/webhook/..." --outdir resu
 ```
 
 Both support completion/failure notifications with rich formatting. Email includes MultiQC reports as attachments.
+
+#### Sample Filtering for Mixed Flowcells (October 23, 2025)
+- **Use case**: Process only mTNA samples from flowcells containing mixed library types
+- **Implementation**: Post-demultiplexing channel filtering before READ_TRIMMING
+- **Two filtering methods available**:
+  1. **Regex pattern** (`--sample_filter_regex`): Filter samples by name pattern
+     ```bash
+     # Only process samples with "TNA" in their name
+     nextflow run . --sample_filter_regex ".*TNA.*"
+
+     # Only process samples starting with specific prefix
+     nextflow run . --sample_filter_regex "^CoB_.*"
+     ```
+  2. **Sample list file** (`--sample_filter_file`): Explicit allow-list
+     ```bash
+     # Create filter file
+     cat > my_samples.txt <<EOF
+     # Only these samples will be processed
+     Sample_TNA_01
+     Sample_TNA_02
+     Sample_TNA_03
+     EOF
+
+     nextflow run . --sample_filter_file my_samples.txt
+     ```
+- **Behavior**:
+  - All samples are demultiplexed (full BCL_DEMULTIPLEX output for QC)
+  - Only filtered samples proceed to trimming, alignment, and downstream analysis
+  - Saves compute time and storage for non-mTNA samples
+  - BCL demultiplexing reports include all samples for record-keeping
+- **Example template**: See `assets/sample_filter_example.txt`
+
+#### Space-Saving Configuration (October 23, 2025)
+- **Issue identified**: Pipeline generates ~5TB of data (3.3TB work/ + 1.7TB results/) at 90% disk capacity
+- **Root causes**:
+  - `publish_dir_mode='copy'` duplicated all published files (2x storage)
+  - Large intermediate files published unnecessarily (SAM 458GB, trimmed FASTQ 869GB, aligned FASTQ 139GB)
+  - Uncompressed FASTQ files in work/ directory (2.8TB)
+- **Solutions implemented**:
+  - **Hard link publishing** (`publish_dir_mode='link'`): Files appear in both work/ and results/ but stored once (~50% space savings)
+  - **`--keep_intermediates` parameter** (default: false): Conditionally publish intermediate files
+    - When false: Only publish QC reports and final products (~3TB saved in results/)
+    - When true: Publish all intermediates for debugging/reanalysis
+  - **Selective publishing configuration**:
+    - STAR SAM files: Only published if `keep_intermediates=true` (saves ~458GB)
+    - TrimGalore FASTQ: Only published if `keep_intermediates=true` (saves ~140GB)
+    - RNA deconvolution FASTQ: Only published if `keep_intermediates=true` (saves ~870GB)
+    - Unsorted BAM: Only published if `keep_intermediates=true` (saves ~100GB)
+  - **Production profile**: Added with `cleanup=true` for auto-cleanup after successful completion
+- **Resume compatibility**: Hard links preserve full `-resume` functionality (files exist in both locations)
+- **Total impact**: **~3.5TB space savings** for production runs while maintaining debugging capability via `--keep_intermediates true`
+- **Usage**:
+  ```bash
+  # Production run (minimal space usage)
+  nextflow run . -profile production,singularity --outdir results
+
+  # Debug run (keep all intermediates)
+  nextflow run . -profile singularity --keep_intermediates --outdir results
+  ```
 
 #### Pipeline Architecture Documentation (September 24, 2025)
 - **Comprehensive Mermaid Flowchart** created and pushed to GitHub:

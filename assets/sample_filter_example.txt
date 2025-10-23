@@ -1,0 +1,17 @@
+# Sample Filter File Example
+# Lines starting with '#' are treated as comments
+# One sample ID per line
+# Sample IDs should match the 'meta.id' field from BCL demultiplexing
+
+# Example: mTNA samples from a mixed flowcell
+Sample_TNA_01
+Sample_TNA_02
+Sample_TNA_03
+
+# You can add comments throughout the file
+Sample_TNA_04
+Sample_TNA_05
+
+# Empty lines are ignored
+
+Sample_TNA_06

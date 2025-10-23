@@ -62,7 +62,30 @@ workflow METHYLTNA {
             params.demultiplexer
         )
 
-        ch_fastq_for_trimming = BCL_DEMULTIPLEX.out.fastq
+        // Optional sample filtering after demultiplexing
+        ch_demux_fastq = BCL_DEMULTIPLEX.out.fastq
+
+        // Apply regex filter if provided
+        if (params.sample_filter_regex) {
+            log.info "Filtering samples with regex: ${params.sample_filter_regex}"
+            ch_demux_fastq = ch_demux_fastq.filter { meta, reads ->
+                meta.id =~ params.sample_filter_regex
+            }
+        }
+
+        // Apply sample list filter if provided
+        if (params.sample_filter_file) {
+            def sample_list = file(params.sample_filter_file, checkIfExists: true)
+                .readLines()
+                .collect { it.trim() }
+                .findAll { it && !it.startsWith('#') }  // Remove empty lines and comments
+            log.info "Filtering samples from file: ${params.sample_filter_file} (${sample_list.size()} samples)"
+            ch_demux_fastq = ch_demux_fastq.filter { meta, reads ->
+                meta.id in sample_list
+            }
+        }
+
+        ch_fastq_for_trimming = ch_demux_fastq
         ch_versions = ch_versions.mix(BCL_DEMULTIPLEX.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(BCL_DEMULTIPLEX.out.reports.collect{it[1]})
 

@@ -52,6 +52,19 @@
                     "help_text": "When enabled, BCL Convert will output all lanes of a flow cell to the same FASTQ files consecutively instead of creating separate files per lane. Useful for flow cells without fluidic boundaries between lanes. Note: Only supported when no 'Lane' column is specified in the sample sheet.",
                     "fa_icon": "fas fa-layer-group"
                 },
+                "sample_filter_regex": {
+                    "type": "string",
+                    "description": "Regex pattern to filter samples after BCL demultiplexing.",
+                    "help_text": "Only samples matching this regex pattern will be processed through the pipeline. Useful for mixed flowcells with mTNA and other library types. Example: '.*TNA.*' to process only samples with 'TNA' in their name. All samples are still demultiplexed, but only matching samples proceed to trimming/alignment.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "sample_filter_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "File containing sample IDs to process (one per line).",
+                    "help_text": "Alternative to regex filtering. Provide a text file with one sample ID per line. Lines starting with '#' are treated as comments. Only listed samples will be processed after demultiplexing.",
+                    "fa_icon": "fas fa-list"
+                },
                 "skip_trimming": {
                     "type": "boolean",
                     "default": false,
@@ -76,6 +89,13 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "keep_intermediates": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Keep intermediate files (SAM, unsorted BAM, trimmed FASTQ) in published results.",
+                    "help_text": "When false (default), only final products and QC reports are published, saving ~3TB of space. When true, all intermediate files are published for debugging/reanalysis. Intermediate files always remain in work/ directory for -resume functionality.",
+                    "fa_icon": "fas fa-save"
                 },
                 "trim_quality": {
                     "type": "integer",
