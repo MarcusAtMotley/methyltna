@@ -69,42 +69,27 @@ workflow METHYLTNA {
         if (params.sample_filter_regex) {
             log.info "Filtering samples with regex: ${params.sample_filter_regex}"
 
-            // Count samples before filtering
-            def all_samples = []
-            ch_demux_fastq.subscribe { meta, reads ->
-                all_samples << meta.id
-            }
+            ch_demux_fastq = ch_demux_fastq
+                .filter { meta, reads ->
+                    meta.id =~ params.sample_filter_regex
+                }
+                .ifEmpty {
+                    error """
+                    ================================================================================
+                    ERROR: Sample filter regex matched NO samples!
 
-            ch_demux_fastq = ch_demux_fastq.filter { meta, reads ->
-                meta.id =~ params.sample_filter_regex
-            }
+                    Regex pattern: ${params.sample_filter_regex}
 
-            // Validate that at least one sample matched
-            ch_demux_fastq = ch_demux_fastq.map { meta, reads ->
-                [meta, reads]
-            }
-            .take(1)  // Force evaluation of first element
-            .map { meta, reads ->
-                log.info "✓ Regex filter matched sample: ${meta.id}"
-                [meta, reads]
-            }
-            .concat(ch_demux_fastq.drop(1))  // Add back remaining samples
-            .ifEmpty {
-                error """
-                ================================================================================
-                ERROR: Sample filter regex matched NO samples!
+                    Please check your --sample_filter_regex pattern.
+                    Example patterns:
+                      - ".*TNA.*"           # Matches samples containing "TNA"
+                      - ".*[DTR]NA-EM.*"    # Matches DNA-EM, TNA-EM, RNA-EM
+                      - "^CoB_.*"           # Matches samples starting with "CoB_"
 
-                Regex pattern: ${params.sample_filter_regex}
-                Demultiplexed samples: ${all_samples.join(', ')}
-
-                Please check your --sample_filter_regex pattern.
-                Example patterns:
-                  - ".*TNA.*"           # Matches samples containing "TNA"
-                  - ".*[DTR]NA-EM.*"    # Matches DNA-EM, TNA-EM, RNA-EM
-                  - "^CoB_.*"           # Matches samples starting with "CoB_"
-                ================================================================================
-                """.stripIndent()
-            }
+                    Check demultiplexing reports to see actual sample names.
+                    ================================================================================
+                    """.stripIndent()
+                }
         }
 
         // Apply sample list filter if provided
