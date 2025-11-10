@@ -8,6 +8,7 @@ include { BCL_DEMULTIPLEX        } from '../subworkflows/nf-core/bcl_demultiplex
 include { READ_TRIMMING          } from '../subworkflows/local/read_trimming/main'
 include { TNA_DECONVOLUTION      } from '../subworkflows/local/tna_deconvolution/main'
 include { PREPARE_REFERENCES     } from '../subworkflows/local/prepare_references/main'
+include { RSEQC_ANALYSIS         } from '../subworkflows/local/rseqc_analysis/main'
 include { STAR_ALIGN             } from '../modules/nf-core/star/align/main'
 include { SAMTOOLS_VIEW          } from '../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_SORT          } from '../modules/nf-core/samtools/sort/main'
@@ -201,6 +202,18 @@ workflow METHYLTNA {
         'bai'     // Generate BAI index format
     )
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
+
+    //
+    // SUBWORKFLOW: RSeQC RNA-seq Quality Control
+    //
+    ch_gtf_for_rseqc = PREPARE_REFERENCES.out.annotation_gtf.map{ it[1] }
+
+    RSEQC_ANALYSIS(
+        SAMTOOLS_SORT.out.bam,
+        ch_gtf_for_rseqc
+    )
+    ch_versions = ch_versions.mix(RSEQC_ANALYSIS.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(RSEQC_ANALYSIS.out.multiqc_files)
 
     //
     // MODULE: FeatureCounts for gene quantification
