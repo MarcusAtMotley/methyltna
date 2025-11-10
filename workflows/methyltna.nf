@@ -208,6 +208,7 @@ workflow METHYLTNA {
     //
     RSEQC_ANALYSIS(
         SAMTOOLS_SORT.out.bam,
+        SAMTOOLS_SORT.out.bai,
         PREPARE_REFERENCES.out.annotation_bed
     )
     ch_versions = ch_versions.mix(RSEQC_ANALYSIS.out.versions)

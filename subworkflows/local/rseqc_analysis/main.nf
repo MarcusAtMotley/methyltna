@@ -18,11 +18,15 @@ include { RSEQC_GENEBODYCOVERAGE   } from '../../../modules/local/rseqc/genebody
 workflow RSEQC_ANALYSIS {
     take:
     bam         // channel: [ val(meta), path(bam) ]
+    bai         // channel: [ val(meta), path(bai) ]
     bed         // channel: [ val(meta), path(bed) ] - Pre-converted BED file from PREPARE_REFERENCES
 
     main:
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    // Join BAM and BAI files by meta.id
+    ch_bam_bai = bam.join(bai, by: [0])  // Joins on meta, produces [meta, bam, bai]
 
     // Extract BED file from channel (remove meta)
     ch_bed = bed.map { meta, bed_file -> bed_file }
@@ -59,10 +63,10 @@ workflow RSEQC_ANALYSIS {
     ch_multiqc_files = ch_multiqc_files.mix(RSEQC_INNERDISTANCE.out.mean.collect{it[1]})
 
     //
-    // MODULE: Gene body coverage analysis (custom)
+    // MODULE: Gene body coverage analysis (custom - requires BAI)
     //
     RSEQC_GENEBODYCOVERAGE(
-        bam,
+        ch_bam_bai,
         ch_bed
     )
     ch_versions = ch_versions.mix(RSEQC_GENEBODYCOVERAGE.out.versions)

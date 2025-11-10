@@ -50,6 +50,16 @@ module_order:
       path_filters:
         - '**/*.featureCounts.tsv.summary'
 
+  # 8b. RSeQC (RNA-seq Quality Control)
+  - rseqc:
+      name: 'RSeQC (RNA-seq QC)'
+      info: 'Comprehensive RNA-seq quality control including read distribution across genomic features, gene body coverage uniformity, inner distance analysis, and BAM statistics.'
+      path_filters:
+        - '**/*.read_distribution.txt'
+        - '**/*.geneBodyCoverage.txt'
+        - '**/*.inner_distance_freq.txt'
+        - '**/*.bam_stat.txt'
+
   # 9. SAMtools Statistics (RNA Alignment QC)
   - samtools:
       name: 'SAMtools Statistics (RNA)'
@@ -139,6 +149,22 @@ report_section_order:
     order: -1001
   "Motleybio-organization-modulestesting-summary":
     order: -1002
+
+# RSeQC-specific configuration
+rseqc_config:
+  read_distribution_plot:
+    # Rename all category labels for better clarity and readability
+    CDS_Exons: 'CDS Exons'
+    5'UTR_Exons: "5' UTR Exons"
+    3'UTR_Exons: "3' UTR Exons"
+    Introns: 'Introns'
+    TSS_up_1kb: 'TSS ±1kb'
+    TSS_up_1kb-5kb: 'TSS 1-5kb Upstream'
+    TSS_up_5kb-10kb: 'TSS 5-10kb Upstream'
+    TES_down_1kb: 'TES ±1kb'
+    TES_down_1kb-5kb: 'TES 1-5kb Downstream'
+    TES_down_5kb-10kb: 'TES 5-10kb Downstream'
+    Other_intergenic: 'Deep Intergenic (>10kb)'
 
 export_plots: true
 
