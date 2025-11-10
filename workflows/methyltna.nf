@@ -206,11 +206,9 @@ workflow METHYLTNA {
     //
     // SUBWORKFLOW: RSeQC RNA-seq Quality Control
     //
-    ch_gtf_for_rseqc = PREPARE_REFERENCES.out.annotation_gtf.map{ it[1] }
-
     RSEQC_ANALYSIS(
         SAMTOOLS_SORT.out.bam,
-        ch_gtf_for_rseqc
+        PREPARE_REFERENCES.out.annotation_bed
     )
     ch_versions = ch_versions.mix(RSEQC_ANALYSIS.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(RSEQC_ANALYSIS.out.multiqc_files)

@@ -9,6 +9,7 @@ include { DOWNLOAD_CLOUD_CACHE } from '../../../modules/local/download_cloud_cac
 include { STAR_GENOMEGENERATE } from '../../../modules/nf-core/star/genomegenerate/main'
 include { BISCUIT_INDEX } from '../../../modules/nf-core/biscuit/index/main'
 include { SAMTOOLS_FAIDX as SAMTOOLS_FAIDX_GENOME } from '../../../modules/nf-core/samtools/faidx/main'
+include { AGAT_CONVERTGFF2BED } from '../../../modules/nf-core/agat/convertgff2bed/main'
 
 workflow PREPARE_REFERENCES {
 
@@ -229,10 +230,30 @@ workflow PREPARE_REFERENCES {
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX_GENOME.out.versions)
     }
 
+    //
+    // MODULE: Convert GTF to BED for RSeQC (with caching)
+    //
+    // Check for cached BED file
+    def bed_filename = gtf_filename.replaceAll(/\.gtf$/, '.bed')
+    def bed_file_path = gtf_cached ? "${params.reference_cache_dir}/${bed_filename}" : null
+    def bed_exists = bed_file_path ? file(bed_file_path).exists() : false
+
+    if (bed_exists && !params.force_rebuild_indexes) {
+        // Use cached BED file
+        ch_annotation_bed = ch_annotation_gtf.combine(Channel.fromPath(bed_file_path))
+            .map { meta_gtf, gtf, bed -> [meta_gtf, bed] }
+    } else {
+        // Generate BED file from GTF using AGAT (more reliable than BEDOPS for large GTFs)
+        AGAT_CONVERTGFF2BED(ch_annotation_gtf)
+        ch_annotation_bed = AGAT_CONVERTGFF2BED.out.bed
+        ch_versions = ch_versions.mix(AGAT_CONVERTGFF2BED.out.versions)
+    }
+
 
     emit:
     genome_fasta        = ch_genome_fasta              // channel: [meta, genome.fa]
     annotation_gtf      = ch_annotation_gtf            // channel: [meta, annotation.gtf]
+    annotation_bed      = ch_annotation_bed            // channel: [meta, annotation.bed]
     star_index          = ch_star_index                // channel: [meta, star_index_dir]
     biscuit_index       = ch_biscuit_index             // channel: [meta, biscuit_index_dir]
     genome_fai          = ch_genome_fai                // channel: [meta, genome.fa.fai]
