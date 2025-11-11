@@ -28,8 +28,9 @@ workflow RSEQC_ANALYSIS {
     // Join BAM and BAI files by meta.id
     ch_bam_bai = bam.join(bai, by: [0])  // Joins on meta, produces [meta, bam, bai]
 
-    // Extract BED file from channel (remove meta)
-    ch_bed = bed.map { meta, bed_file -> bed_file }
+    // Extract BED file from channel (remove meta) and convert to value channel
+    // Using .collect() makes the BED file reusable across multiple downstream processes
+    ch_bed = bed.map { meta, bed_file -> bed_file }.collect()
 
     //
     // MODULE: BAM statistics
