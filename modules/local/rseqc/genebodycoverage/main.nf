@@ -23,11 +23,28 @@ process RSEQC_GENEBODYCOVERAGE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    # Run geneBody_coverage.py with error handling for low-coverage samples
+    # If the tool fails (e.g., insufficient coverage), create minimal output to allow pipeline continuation
     geneBody_coverage.py \\
         -i $bam \\
         -r $bed \\
         -o ${prefix} \\
-        $args
+        $args || {
+        echo "WARNING: geneBody_coverage.py failed for ${prefix} (likely insufficient mapped reads)" >&2
+        echo "Creating minimal output to allow pipeline continuation" >&2
+        # Remove any partially created files before creating fallback output (handles bash noclobber mode)
+        rm -f ${prefix}.geneBodyCoverage.txt ${prefix}.geneBodyCoverage.curves.pdf
+        echo "# Gene body coverage analysis failed - insufficient mapped reads or coverage" > ${prefix}.geneBodyCoverage.txt
+        echo "# This sample will be excluded from gene body coverage visualization in MultiQC" >> ${prefix}.geneBodyCoverage.txt
+
+        # Create versions file for failed samples too
+        cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        rseqc: \$(geneBody_coverage.py --version | sed -e "s/geneBody_coverage.py //g")
+    END_VERSIONS
+
+        exit 0
+    }
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

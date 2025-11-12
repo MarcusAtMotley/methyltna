@@ -11,6 +11,7 @@ include { BISCUIT_INDEX } from '../../../modules/nf-core/biscuit/index/main'
 include { SAMTOOLS_FAIDX as SAMTOOLS_FAIDX_GENOME } from '../../../modules/nf-core/samtools/faidx/main'
 include { AGAT_CONVERTGFF2BED } from '../../../modules/nf-core/agat/convertgff2bed/main'
 
+
 workflow PREPARE_REFERENCES {
 
     take:
