@@ -6,6 +6,7 @@
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { BCL_DEMULTIPLEX        } from '../subworkflows/nf-core/bcl_demultiplex/main'
 include { READ_TRIMMING          } from '../subworkflows/local/read_trimming/main'
+include { FILTER_EMPTY_SAMPLES   } from '../modules/local/filter_empty_samples/main'
 include { TNA_DECONVOLUTION      } from '../subworkflows/local/tna_deconvolution/main'
 include { PREPARE_REFERENCES     } from '../subworkflows/local/prepare_references/main'
 include { RSEQC_ANALYSIS         } from '../subworkflows/local/rseqc_analysis/main'
@@ -137,11 +138,46 @@ workflow METHYLTNA {
     ch_multiqc_files = ch_multiqc_files.mix(READ_TRIMMING.out.multiqc_files)
 
     //
-    // SUBWORKFLOW: RNA barcode deconvolution
+    // MODULE: Count reads in trimmed samples and filter empty ones
+    //
+    FILTER_EMPTY_SAMPLES(
+        READ_TRIMMING.out.reads,
+        params.min_reads_threshold
+    )
+    ch_versions = ch_versions.mix(FILTER_EMPTY_SAMPLES.out.versions.first())
+
+    // Split samples into valid and empty based on read count
+    FILTER_EMPTY_SAMPLES.out.samples_with_counts
+        .branch { meta, reads, read_count ->
+            def count = read_count as Integer
+            valid: count >= params.min_reads_threshold
+                return tuple(meta, reads)
+            empty: true
+                return tuple(meta, reads, count)
+        }
+        .set { ch_filtered_reads }
+
+    // Log empty samples that were filtered out
+    ch_filtered_reads.empty.subscribe { meta, reads, read_count ->
+        log.warn """
+        ================================================================================
+        SKIPPING SAMPLE: ${meta.id}
+
+        Reason: Insufficient reads after trimming (${read_count} reads)
+        Threshold: ${params.min_reads_threshold} reads minimum
+
+        This sample will be excluded from all downstream analysis.
+        Check FastQC and TrimGalore reports for quality issues.
+        ================================================================================
+        """.stripIndent()
+    }
+
+    //
+    // SUBWORKFLOW: RNA barcode deconvolution (only on samples with sufficient reads)
     //
     final cfg_file = file(params.rna_barcode_config, checkIfExists: true)
 
-    ch_reads_with_cfg = READ_TRIMMING.out.reads.map { meta, reads ->
+    ch_reads_with_cfg = ch_filtered_reads.valid.map { meta, reads ->
         tuple(meta, reads, cfg_file)
     }
 

@@ -133,6 +133,14 @@
                     "minimum": 1,
                     "maximum": 10
                 },
+                "min_reads_threshold": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Minimum number of reads required after trimming.",
+                    "help_text": "Samples with fewer than this many reads after trimming will be excluded from all downstream analysis. This prevents errors from empty samples and saves compute resources. FastQC and TrimGalore reports are still generated for QC purposes.",
+                    "fa_icon": "fas fa-filter",
+                    "minimum": 1
+                },
                 "skip_rna_deconvolution": {
                     "type": "boolean",
                     "default": false,
