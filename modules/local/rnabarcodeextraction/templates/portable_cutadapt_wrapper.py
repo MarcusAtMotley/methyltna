@@ -377,9 +377,18 @@ class PairedEndCutAdaptRunner:
                                              f"{name_for_misses.title()}: {untags} ({untags / i:.1%})")
         logger.debug(f"Tagged reads written to {tagged_fastq_r1} and {tagged_fastq_r2}.")
         logger.debug(f"Untagged reads written to {untagged_fastq_r1} and {untagged_fastq_r2}.")
-        logger.success(f"{name_for_hits.title()}: {single_tags} ({single_tags / i:.1%}) "
-                    f"Double {name_for_hits.title()}: {double_tags} ({double_tags / i:.1%}) "
-                    f"{name_for_misses.title()}: {untags} ({untags / i:.1%})")
+
+        # Handle case where no reads were processed (prevents UnboundLocalError on 'i')
+        total_processed = single_tags + double_tags + untags
+        if total_processed == 0:
+            logger.warning(f"No reads were processed during splitting - sample may be empty or have no valid output")
+            logger.info(f"{name_for_hits.title()}: {single_tags} reads")
+            logger.info(f"Double {name_for_hits.title()}: {double_tags} reads")
+            logger.info(f"{name_for_misses.title()}: {untags} reads")
+        else:
+            logger.success(f"{name_for_hits.title()}: {single_tags} ({single_tags / total_processed:.1%}) "
+                        f"Double {name_for_hits.title()}: {double_tags} ({double_tags / total_processed:.1%}) "
+                        f"{name_for_misses.title()}: {untags} ({untags / total_processed:.1%})")
         # Now we should delete the original output files, since we have split them
         try:
             self.output_file_r1.unlink(missing_ok=True)
@@ -648,8 +657,15 @@ class SingleEndCutAdaptRunner:
 
         logger.debug(f"Tagged reads written to {tagged_fastq}.")
         logger.debug(f"Untagged reads written to {untagged_fastq}.")
-        logger.success(f"{name_for_hits.title()}: {single_tags} ({single_tags / total_reads:.1%}) "
-                    f"{name_for_misses.title()}: {untags} ({untags / total_reads:.1%})")
+
+        # Handle case where no reads were processed (prevents ZeroDivisionError)
+        if total_reads == 0:
+            logger.warning(f"No reads were processed during splitting - sample may be empty or have no valid output")
+            logger.info(f"{name_for_hits.title()}: {single_tags} reads")
+            logger.info(f"{name_for_misses.title()}: {untags} reads")
+        else:
+            logger.success(f"{name_for_hits.title()}: {single_tags} ({single_tags / total_reads:.1%}) "
+                        f"{name_for_misses.title()}: {untags} ({untags / total_reads:.1%})")
 
         # Delete the original output file
         try:
