@@ -35,7 +35,8 @@ process SUBSAMPLE_BAM_FOR_QC {
         echo "  Subsampling to ${max_reads} reads (fraction: \${fraction})"
 
         # Subsample BAM file with random seed for reproducibility
-        samtools view -s 42.\${fraction} -b ${args} ${bam} > ${prefix}_subsampled.bam
+        # Strip leading "0." from fraction for samtools -s format (seed.fraction)
+        samtools view -s 42.\${fraction#0.} -b ${args} ${bam} > ${prefix}_subsampled.bam
 
         # Index subsampled BAM
         samtools index ${prefix}_subsampled.bam
