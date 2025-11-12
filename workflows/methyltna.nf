@@ -9,6 +9,7 @@ include { READ_TRIMMING          } from '../subworkflows/local/read_trimming/mai
 include { TNA_DECONVOLUTION      } from '../subworkflows/local/tna_deconvolution/main'
 include { PREPARE_REFERENCES     } from '../subworkflows/local/prepare_references/main'
 include { RSEQC_ANALYSIS         } from '../subworkflows/local/rseqc_analysis/main'
+include { SUBSAMPLE_BAM_FOR_QC   } from '../modules/local/subsample_bam_for_qc/main'
 include { STAR_ALIGN             } from '../modules/nf-core/star/align/main'
 include { SAMTOOLS_VIEW          } from '../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_SORT          } from '../modules/nf-core/samtools/sort/main'
@@ -204,11 +205,33 @@ workflow METHYLTNA {
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
 
     //
+    // MODULE: Optionally subsample BAMs for faster RSeQC QC
+    //
+    if (!params.skip_rseqc_subsampling && params.rseqc_subsample_reads > 0) {
+        // Subsample BAMs to improve RSeQC performance
+        ch_rseqc_bam_input = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_SORT.out.bai)
+
+        SUBSAMPLE_BAM_FOR_QC(
+            ch_rseqc_bam_input,
+            params.rseqc_subsample_reads
+        )
+        ch_versions = ch_versions.mix(SUBSAMPLE_BAM_FOR_QC.out.versions)
+
+        // Use subsampled BAMs for RSeQC
+        ch_rseqc_bam = SUBSAMPLE_BAM_FOR_QC.out.bam.map{ meta, bam, bai -> [meta, bam] }
+        ch_rseqc_bai = SUBSAMPLE_BAM_FOR_QC.out.bam.map{ meta, bam, bai -> [meta, bai] }
+    } else {
+        // Use full-depth BAMs for RSeQC (no subsampling)
+        ch_rseqc_bam = SAMTOOLS_SORT.out.bam
+        ch_rseqc_bai = SAMTOOLS_SORT.out.bai
+    }
+
+    //
     // SUBWORKFLOW: RSeQC RNA-seq Quality Control
     //
     RSEQC_ANALYSIS(
-        SAMTOOLS_SORT.out.bam,
-        SAMTOOLS_SORT.out.bai,
+        ch_rseqc_bam,
+        ch_rseqc_bai,
         PREPARE_REFERENCES.out.annotation_bed
     )
     ch_versions = ch_versions.mix(RSEQC_ANALYSIS.out.versions)

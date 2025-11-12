@@ -1,0 +1,7 @@
+name: subsample_bam_for_qc
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::samtools=1.21

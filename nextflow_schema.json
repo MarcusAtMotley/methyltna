@@ -368,6 +368,30 @@
                 }
             }
         },
+        "quality_control_options": {
+            "title": "Quality control options",
+            "type": "object",
+            "fa_icon": "fas fa-chart-bar",
+            "description": "Options for quality control analyses including RSeQC.",
+            "help_text": "Configure QC analyses performance and behavior. Subsampling can significantly improve runtime while maintaining statistical validity.",
+            "properties": {
+                "rseqc_subsample_reads": {
+                    "type": "integer",
+                    "default": 2000000,
+                    "description": "Maximum number of reads to use for RSeQC analyses.",
+                    "help_text": "Subsample BAM files to this many reads before running RSeQC gene body coverage analysis. Default 2M provides 8-10x speedup (40hrs → 4-5hrs for 20 samples). Increase to 5M for higher confidence, or 10M for thorough analysis. Set to 0 or use --skip_rseqc_subsampling for full-depth analysis.",
+                    "fa_icon": "fas fa-tachometer-alt",
+                    "minimum": 0
+                },
+                "skip_rseqc_subsampling": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip BAM subsampling and use full-depth reads for RSeQC.",
+                    "help_text": "When enabled, RSeQC analyses will process full-depth BAM files without subsampling. This provides the most comprehensive analysis but takes much longer (~40 hours for 20 samples vs 4-5 hours with 2M subsampling).",
+                    "fa_icon": "fas fa-toggle-off"
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
