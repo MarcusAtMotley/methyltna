@@ -2,8 +2,12 @@
 
 ## Background
 
-RSeQC quality control analyses, particularly `geneBody_coverage.py`, are very time-consuming when run on full-depth BAM files. For a 20-sample run with ~254K transcripts:
-- Current runtime: **~8 hours total** (~20-25 min per BAM for geneBody_coverage)
+RSeQC quality control analyses, particularly `geneBody_coverage.py`, are very time-consuming when run on full-depth BAM files. For a 20-sample mixed run with ~254K transcripts:
+- Current runtime: **~40 hours total** with extreme variability by sample type:
+  - DNA samples (4M reads): ~24 min/sample (~5.7 min per million reads)
+  - TNA samples (35M reads): ~183 min/sample (~5.4 min per million reads)
+  - RNA samples (10M reads): ~86 min/sample (~11.1 min per million reads)
+- **RNA samples take 2x longer per million reads** than DNA/TNA due to better transcript coverage
 - Most time spent on geneBody_coverage step
 - Other RSeQC tools (bamstat, read_distribution, inner_distance) are relatively fast
 
@@ -194,17 +198,32 @@ For integration into the methyltna pipeline:
 
 ## Expected Performance Improvements
 
+Based on real timing analysis from mot26 run (see `/home/marcus/runs/mot26/timing_analysis.txt`):
+
+**Performance Characteristics by Sample Type:**
+- **DNA samples (4M reads)**: ~24 min (~5.7 min per million reads)
+- **TNA samples (35M reads avg)**: ~183 min (~5.4 min per million reads)
+- **RNA samples (10M reads avg)**: ~86 min (~11.1 min per million reads)
+
+**Key Insight**: RNA samples take **2x longer per million reads** than DNA/TNA due to better transcript coverage requiring more feature processing.
+
 **Current (no subsampling):**
-- 20 samples × 25 min/sample = ~8 hours
+- 20 mixed samples = **~40 hours total**
+- High variability: 24 min (DNA) to 204 min (TNA) per sample
 
 **With 5M read subsampling:**
-- Assume average sample has 20M reads → subsample to 5M (4x reduction)
-- Estimated: 20 samples × ~6 min/sample = **~2 hours**
-- **~4x speedup** on typical datasets
+- DNA (4M): 24 min → no change (already <5M)
+- TNA (35M): 183 min → 27 min (**6.8x speedup**)
+- RNA (10M): 86 min → 56 min (**1.5x speedup**)
+- **Total: ~10 hours for 20 samples (4x speedup!)**
+- Much more manageable for production pipelines
 
 **With 2M read subsampling:**
-- Even faster: ~1 hour total
-- Still reliable for QC purposes
+- DNA (4M): 24 min → 11 min (2.2x speedup)
+- TNA (35M): 183 min → 11 min (**16.6x speedup!**)
+- RNA (10M): 86 min → 22 min (3.9x speedup)
+- **Total: ~4-5 hours for 20 samples (8-10x speedup!)**
+- Recommended for production use
 
 ## Testing Plan
 
@@ -271,7 +290,12 @@ For integration into the methyltna pipeline:
 
 ## Current Status
 
-This document was created based on analysis of the current mot26 run where RSeQC is taking ~8 hours for 20 samples. The subsampling strategy has been validated in other RNA-seq pipelines (e.g., nf-core/rnaseq uses similar approaches).
+This document was created based on detailed timing analysis of the mot26 production run (see `/home/marcus/runs/mot26/timing_analysis.txt`), where RSeQC gene body coverage takes **~40 hours for 20 mixed samples** with extreme variability:
+- DNA samples: ~24 minutes per sample
+- TNA samples: ~183 minutes per sample (up to 3+ hours)
+- RNA samples: ~86 minutes per sample
+
+The 2x longer processing time per million reads for RNA samples (due to better transcript coverage) makes fixed-count subsampling particularly beneficial. The subsampling strategy has been validated in other RNA-seq pipelines (e.g., nf-core/rnaseq uses similar approaches) and is **essential for production viability**.
 
 ## References
 
