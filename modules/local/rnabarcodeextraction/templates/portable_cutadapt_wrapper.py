@@ -212,22 +212,39 @@ class PairedEndCutAdaptRunner:
         total_out_reads = read_counts.get('output', 0)
         total_found_adapters_r1 = read_counts.get('read1_with_adapter', 0)
         total_found_adapters_r2 = read_counts.get('read2_with_adapter', 0)
-        # Lets turn this whole thing into a single string for easy logging
-        quick_report = (
-            f"Quick Report:\n"
-            f"\tInput files: {self.read_1}, {self.read_2}\n"
-            f"\tOutput files: {self.output_file_r1}, {self.output_file_r2}\n"
-            f"\tAdapter sequence: {self.adapter_sequence}\n"
-            f"\tTotal output reads:       {total_out_reads:>9} reads\n"
-            f"\tTotal reads with adapter R1: {total_found_adapters_r1:>9} "
-            f"reads ({total_found_adapters_r1 / total_out_reads:.2%})\n"
-            f"\tTotal reads with adapter R2: {total_found_adapters_r2:>9} "
-            f"reads ({total_found_adapters_r2 / total_out_reads:.2%})\n"
-            f"\tTotal adapters found: {total_found_adapters_r1 + total_found_adapters_r2:>9} reads "
-            f"({(total_found_adapters_r1 + total_found_adapters_r2) / total_out_reads:.2%})\n"
-            f"\tJSON report: {self.json_report}\n"
-            f"\tText report: {self.txt_report}\n"
-        )
+
+        # Handle case where no output reads (prevents division by zero)
+        if total_out_reads == 0:
+            quick_report = (
+                f"Quick Report:\n"
+                f"\tWARNING: No output reads found - sample may be empty or have no valid barcodes\n"
+                f"\tInput files: {self.read_1}, {self.read_2}\n"
+                f"\tOutput files: {self.output_file_r1}, {self.output_file_r2}\n"
+                f"\tAdapter sequence: {self.adapter_sequence}\n"
+                f"\tTotal output reads:       {total_out_reads:>9} reads (0 reads output)\n"
+                f"\tTotal reads with adapter R1: {total_found_adapters_r1:>9} reads (N/A - no output)\n"
+                f"\tTotal reads with adapter R2: {total_found_adapters_r2:>9} reads (N/A - no output)\n"
+                f"\tTotal adapters found: {total_found_adapters_r1 + total_found_adapters_r2:>9} reads (N/A - no output)\n"
+                f"\tJSON report: {self.json_report}\n"
+                f"\tText report: {self.txt_report}\n"
+            )
+        else:
+            # Normal case with output reads - calculate percentages
+            quick_report = (
+                f"Quick Report:\n"
+                f"\tInput files: {self.read_1}, {self.read_2}\n"
+                f"\tOutput files: {self.output_file_r1}, {self.output_file_r2}\n"
+                f"\tAdapter sequence: {self.adapter_sequence}\n"
+                f"\tTotal output reads:       {total_out_reads:>9} reads\n"
+                f"\tTotal reads with adapter R1: {total_found_adapters_r1:>9} "
+                f"reads ({total_found_adapters_r1 / total_out_reads:.2%})\n"
+                f"\tTotal reads with adapter R2: {total_found_adapters_r2:>9} "
+                f"reads ({total_found_adapters_r2 / total_out_reads:.2%})\n"
+                f"\tTotal adapters found: {total_found_adapters_r1 + total_found_adapters_r2:>9} reads "
+                f"({(total_found_adapters_r1 + total_found_adapters_r2) / total_out_reads:.2%})\n"
+                f"\tJSON report: {self.json_report}\n"
+                f"\tText report: {self.txt_report}\n"
+            )
         logger.info(quick_report)
 
     def provide_mini_results_dict(self):
