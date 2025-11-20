@@ -17,7 +17,7 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
 
 ### Git Repository Status
 - ✅ **methyltna**: Clean working tree, all commits pushed to `origin/master`
-- ⚠️ **modulestesting**: Uncommitted changes (251 insertions, 75 deletions) - **ACTION REQUIRED**
+- ✅ **stemloopTNA-pipeline** (formerly modulestesting): All changes committed and pushed (commit fe387eb)
 
 ### Data Inventory
 - **Pipeline caches**: 3.7GB (Nextflow work directory - regenerable)
@@ -29,41 +29,28 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
 
 ## Phase 1: Pre-Closure Actions (ON VM)
 
-### 1.1 Handle modulestesting Repository
+### 1.1 Handle stemloopTNA-pipeline Repository ✅ COMPLETED
 
-**Location:** `/home/marcus/pipelines/modulestesting`
+**Location:** `/home/marcus/pipelines/stemloopTNA-pipeline` (formerly `modulestesting`)
+**GitHub:** `https://github.com/Motleybio-organization/stemloopTNA-pipeline`
 
-- [ ] Review uncommitted changes:
-  ```bash
-  cd ~/pipelines/modulestesting
-  git status
-  git diff --stat
-  ```
+- [x] Review uncommitted changes ✅
+- [x] **Committed and pushed all changes** (commit fe387eb) ✅
+  - Cloud reference caching system (DOWNLOAD_CLOUD_CACHE module)
+  - Custom container management with build scripts
+  - Enhanced PREPARE_REFERENCES subworkflow
+  - samtools/view nf-core module
+  - Documentation updates (CLAUDE.md, README.md)
+  - 23 files changed, 2412 insertions
 
-- [ ] **Decision point - Choose ONE:**
-  - [ ] **Option A: Commit and push changes**
-    ```bash
-    git add -A
-    git commit -m "feat: container updates and reference caching improvements"
-    git push origin master
-    ```
+- [x] **Repository renamed** from `modulestesting` to `stemloopTNA-pipeline` ✅
+  - Local directory updated: `~/pipelines/stemloopTNA-pipeline`
+  - Remote URL updated: `https://github.com/Motleybio-organization/stemloopTNA-pipeline.git`
 
-  - [ ] **Option B: Discard experimental changes**
-    ```bash
-    git reset --hard HEAD
-    git clean -fd
-    ```
-
-- [ ] **Handle large untracked files:**
-  - [ ] Backup Singularity container (300MB) if needed:
-    ```bash
-    gsutil cp ~/pipelines/modulestesting/containers/methylsnp-processing.sif \
-      gs://motleybio-backups/vm-artifacts/modulestesting/
-    ```
-  - [ ] Add to `.gitignore` if committing other changes:
-    ```bash
-    echo "containers/*.sif" >> .gitignore
-    ```
+- [x] **Container files properly managed** ✅
+  - Container recipe (`.def`) and build scripts tracked in git
+  - Binary (`.sif`) properly gitignored
+  - Documentation added to `containers/README.md`
 
 ### 1.2 Preserve Run Outputs (CRITICAL DECISION)
 
@@ -193,18 +180,18 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
   git log --branches --not --remotes --oneline  # Should be empty
   ```
 
-- [ ] Verify modulestesting (after handling changes in 1.1):
+- [x] Verify stemloopTNA-pipeline (after handling changes in 1.1): ✅
   ```bash
-  cd ~/pipelines/modulestesting
-  git status  # Should be clean
-  git log --branches --not --remotes --oneline  # Should be empty
+  cd ~/pipelines/stemloopTNA-pipeline
+  git status  # Clean - only .claude/settings.local.json (local config, not tracked)
+  git log --branches --not --remotes --oneline  # Empty - all pushed
   ```
 
 - [ ] Clone to local machine as final backup:
   ```bash
   # On local machine
   git clone https://github.com/MarcusAtMotley/methyltna.git
-  git clone https://github.com/Motleybio-organization/modulestesting.git
+  git clone https://github.com/Motleybio-organization/stemloopTNA-pipeline.git
   ```
 
 ---
@@ -381,8 +368,8 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
 ### 3.1 Final Verification
 
 - [ ] Confirm all critical data backed up:
-  - [ ] methyltna repository pushed to GitHub
-  - [ ] modulestesting repository pushed to GitHub
+  - [x] methyltna repository pushed to GitHub ✅
+  - [x] stemloopTNA-pipeline repository pushed to GitHub ✅
   - [ ] Reference files in S3
   - [ ] Critical run outputs archived (if applicable)
   - [ ] Custom scripts downloaded
@@ -484,7 +471,7 @@ annotation_gtf:      s3://motleybio-references/gtf/Homo_sapiens.GRCh38.112.chr_l
 ### Key Contacts
 - Pipeline Developer: Marcus Viscardi
 - GitHub Repository: https://github.com/MarcusAtMotley/methyltna
-- Module Testing Repo: https://github.com/Motleybio-organization/modulestesting
+- Stem-Loop TNA Pipeline: https://github.com/Motleybio-organization/stemloopTNA-pipeline
 
 ---
 
