@@ -52,84 +52,164 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
   - Binary (`.sif`) properly gitignored
   - Documentation added to `containers/README.md`
 
-### 1.2 Preserve Run Outputs (CRITICAL DECISION)
+### 1.2 VM Run Outputs ✅ NO ACTION NEEDED
 
-**Location:** `~/runs/` (5.7TB total)
+**Location:** `~/runs/` (5.7TB total - VM local cache only)
 
-**Question:** Which run outputs are irreplaceable?
+**Status:** ✅ **Important pipeline outputs already in GCS bucket**
+- Production outputs safely stored in GCS
+- VM `~/runs/` directory is working cache - can be deleted with VM
+- No archival needed from VM
 
-- [ ] **Option A: Archive all runs (expensive)**
-  - Cost: ~$150/month S3 Standard or ~$30/month S3 Glacier
-  - Command:
-    ```bash
-    # Upload to GCS first (while authenticated)
-    gsutil -m cp -r ~/runs/ gs://motleybio-archive/vm-runs/
-    # Then transfer to S3 later
-    aws s3 sync gs://motleybio-archive/vm-runs/ s3://motleybio-archive/vm-runs/
-    ```
+**Decision:** Delete with VM (no backup required) ✅
 
-- [ ] **Option B: Archive selected outputs only (recommended)**
-  - [ ] Keep MultiQC reports (small, valuable):
-    ```bash
-    find ~/runs -name "multiqc_report.html" -exec cp --parents {} /tmp/run_reports/ \;
-    gsutil -m cp -r /tmp/run_reports/ gs://motleybio-archive/
-    ```
-  - [ ] Keep final BAMs from critical runs (list below):
-    - [ ] mot26 BAMs? (Y/N): _____
-    - [ ] mot30 BAMs? (Y/N): _____
-    - [ ] mot27 BAMs? (Y/N): _____
+### 1.3 Identify GCS Buckets for Migration
 
-  - [ ] Document run parameters for regeneration:
-    ```bash
-    find ~/runs -name ".nextflow.log" -o -name "params.json" -exec cp --parents {} /tmp/run_params/ \;
-    ```
+**Task:** Document which GCS buckets contain data to migrate to AWS S3
 
-- [ ] **Option C: Delete all (regenerate on AWS)**
-  - [ ] Confirmed: All runs can be regenerated from source data? (Y/N): _____
-  - [ ] Backup only samplesheets:
-    ```bash
-    find ~/runs -name "samplesheet*.csv" -exec cp --parents {} /tmp/samplesheets/ \;
-    ```
+- [ ] List all GCS buckets:
+  ```bash
+  gsutil ls
+  ```
 
-### 1.3 Transfer Reference Files to S3
+- [ ] Document buckets and contents:
+  ```
+  Bucket Name                     | Contents                        | Size | Migrate? (Y/N)
+  --------------------------------|--------------------------------|------|---------------
+  gs://motleybio-_________        | _____________________________  | ____ | ___
+  gs://motleybio-_________        | _____________________________  | ____ | ___
+  gs://motleybio-_________        | _____________________________  | ____ | ___
+  ```
+
+- [ ] Identify priority order for transfer:
+  1. _________________________________ (reason: _________________)
+  2. _________________________________ (reason: _________________)
+  3. _________________________________ (reason: _________________)
+
+### 1.4 GCS Bucket to AWS S3 Transfer Strategy
+
+**Overview:** Transfer pipeline outputs and reference files from GCS to S3
+
+**Transfer Methods Available:**
+
+#### **Method 1: AWS DataSync (Recommended for Large Transfers)**
+- **Best for:** Large buckets (>100GB), one-time bulk migrations
+- **Pros:** Fast, automated, handles retries, validates data integrity
+- **Cons:** Requires AWS DataSync agent setup
+- **Cost:** ~$0.0125/GB transferred
+
+```bash
+# Setup (AWS Console):
+# 1. Create DataSync agent in AWS region
+# 2. Configure GCS as source location
+# 3. Configure S3 as destination
+# 4. Create and run transfer task
+
+# Example: Transfer entire bucket
+# Source: gs://motleybio/
+# Destination: s3://motleybio-data/
+```
+
+#### **Method 2: rclone (Recommended for Flexibility)**
+- **Best for:** Selective transfers, custom filtering, resumable transfers
+- **Pros:** Free, flexible, cross-cloud native, resumable
+- **Cons:** Requires local installation/configuration
+- **Cost:** Only egress from GCS (~$0.12/GB) + S3 storage
+
+```bash
+# Install rclone
+curl https://rclone.org/install.sh | sudo bash
+
+# Configure remotes
+rclone config
+# Add GCS remote: name it "gcs"
+# Add S3 remote: name it "s3"
+
+# Test connection
+rclone ls gcs:motleybio/ --max-depth 1
+rclone ls s3:motleybio-data/ --max-depth 1
+
+# Transfer with progress
+rclone sync gcs:motleybio/ s3://motleybio-data/ \
+  --progress \
+  --checksum \
+  --transfers 8 \
+  --checkers 16 \
+  --log-file transfer.log
+
+# For large transfers, use --dry-run first!
+rclone sync gcs:motleybio/ s3://motleybio-data/ --dry-run
+```
+
+#### **Method 3: gsutil + AWS CLI (Simple, Two-Step)**
+- **Best for:** Small-medium datasets, one-off transfers
+- **Pros:** Uses existing tools, straightforward
+- **Cons:** Two-step process (download → upload), requires disk space
+- **Cost:** GCS egress + temporary storage
+
+```bash
+# Step 1: Download from GCS to local/EC2
+gsutil -m cp -r gs://motleybio/path/ /tmp/transfer/
+
+# Step 2: Upload to S3
+aws s3 sync /tmp/transfer/ s3://motleybio-data/path/ \
+  --storage-class STANDARD
+
+# Clean up
+rm -rf /tmp/transfer/
+```
+
+#### **Method 4: Google Transfer Service to S3 (Official)**
+- **Best for:** Very large transfers (multi-TB), managed service
+- **Pros:** Google-managed, optimized routes, no egress charges
+- **Cons:** Requires Google Cloud Console setup, AWS credentials in GCP
+- **Cost:** Free for transfers, only pay S3 storage
+
+```bash
+# Setup (GCP Console):
+# 1. Go to Cloud Console > Transfer Service
+# 2. Create transfer job
+# 3. Source: Cloud Storage bucket
+# 4. Destination: AWS S3 (provide IAM credentials)
+# 5. Schedule and run
+```
+
+**Recommended Approach:**
+- [ ] Use **rclone** for reference files and selective data (~44GB, flexible)
+- [ ] Use **AWS DataSync** or **Google Transfer Service** for bulk pipeline outputs (multi-TB)
+
+### 1.5 Transfer Reference Files to S3
 
 **Current sources (GCS):**
 - `gs://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa` (3.1GB)
 - `gs://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa`
 - `gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf` (1.5GB)
 
-**Options:**
+**Transfer Commands (using rclone):**
 
-- [ ] **Option A: Transfer pre-built indexes (44GB, saves time)**
-  ```bash
-  # Create S3 bucket structure
-  aws s3 mb s3://motleybio-references
+```bash
+# Create S3 bucket
+aws s3 mb s3://motleybio-references
 
-  # Transfer cached references from VM
-  aws s3 sync ~/pipelines/methyltna/references/ s3://motleybio-references/ \
-    --exclude "*.log" --exclude ".nextflow*"
+# Transfer reference files from GCS
+rclone copy gcs:motleybio/Resources/ s3://motleybio-references/ \
+  --progress \
+  --checksum \
+  --transfers 4
 
-  # Estimated time: 30-60 minutes
-  # Estimated cost: ~$5 transfer + ~$1/month storage
-  ```
+# Verify transfer
+rclone check gcs:motleybio/Resources/ s3://motleybio-references/ \
+  --one-way
+```
 
-- [ ] **Option B: Transfer only FASTA/GTF (4.6GB, rebuild indexes on AWS)**
-  ```bash
-  # Transfer source files only
-  aws s3 sync ~/pipelines/methyltna/references/fasta/ s3://motleybio-references/fasta/
-  aws s3 cp ~/pipelines/methyltna/references/Homo_sapiens.GRCh38.112.chr_label.gtf \
-    s3://motleybio-references/gtf/
-
-  # Let pipeline rebuild indexes on first AWS run (~3 hours, ~$2 compute)
-  ```
-
-- [ ] **Option C: Use public sources (no transfer, download from Ensembl)**
-  - Pipeline will download from Ensembl on first run
-  - May be slower depending on network
+**Alternatives:**
+- [ ] **Option A: Transfer from GCS (recommended)** - Use existing files
+- [ ] **Option B: Transfer from VM cache** - If GCS access problematic (44GB from `~/pipelines/methyltna/references/`)
+- [ ] **Option C: Rebuild on AWS** - Let pipeline download and build indexes (~3 hours first run)
 
 **Selected Option:** _____ (A/B/C)
 
-### 1.4 Backup Custom Scripts and Analysis
+### 1.6 Backup Custom Scripts and Analysis
 
 - [ ] Search for custom scripts not in git:
   ```bash
@@ -146,7 +226,7 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
   scp marcus@vm-name:/path/to/script.py ~/local/backup/
   ```
 
-### 1.5 Document Current Environment
+### 1.7 Document Current Environment
 
 - [ ] Export Nextflow configuration:
   ```bash
@@ -170,7 +250,7 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
   conda --version >> /tmp/software_versions.txt 2>&1
   ```
 
-### 1.6 Final Git Verification
+### 1.8 Final Git Verification
 
 - [ ] Verify methyltna repository:
   ```bash
