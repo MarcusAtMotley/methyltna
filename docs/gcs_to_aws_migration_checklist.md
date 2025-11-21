@@ -232,7 +232,7 @@ rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
 ```bash
 # This shows what WOULD be transferred without actually doing it
 rclone sync gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --dry-run \
   --progress \
   --stats 10s
@@ -246,7 +246,7 @@ rclone sync gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
 ```bash
 rclone sync \
   gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --progress \
   --stats 30s \
   --transfers 16 \
@@ -278,7 +278,7 @@ rclone sync \
 # Copy doesn't delete anything from destination
 rclone copy \
   gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --progress \
   --stats 30s \
   --transfers 16 \
@@ -295,7 +295,7 @@ screen -S rclone-transfer
 
 # Inside screen session, run transfer command
 rclone sync gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --progress --stats 30s --transfers 16 --checkers 32 --checksum \
   --log-file ~/rclone-transfer-$(date +%Y%m%d-%H%M%S).log
 
@@ -322,11 +322,11 @@ watch -n 10 'tail -50 ~/rclone-transfer-*.log | grep -A 20 "Transferred:"'
 ```bash
 # Compare object counts between source and destination
 rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
-rclone size s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/
+rclone size s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/
 
 # List any differences
 rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --one-way
 ```
 
@@ -348,7 +348,7 @@ Estimated time: ~48-72 hours (2-3 days)
 ```bash
 # Full comparison (can take hours for large datasets)
 rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --one-way \
   --checksum \
   --log-file ~/rclone-verify-$(date +%Y%m%d-%H%M%S).log
@@ -360,7 +360,7 @@ rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
 ```bash
 # Compare checksums of a few large files manually
 rclone md5sum gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/sample.bam
-rclone md5sum s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/sample.bam
+rclone md5sum s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/sample.bam
 ```
 
 **Verify file count and size match:**
@@ -369,7 +369,7 @@ rclone md5sum s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/sample.bam
 rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
 
 # S3
-rclone size s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/
+rclone size s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/
 
 # Should show identical:
 # - Total objects: XXXXXX
@@ -453,13 +453,13 @@ rclone sync ... --buffer-size 16M --transfers 4
 aws s3 mb s3://motleybio-references
 
 # Transfer reference files from GCS
-rclone copy gcs:motleybio/Resources/ s3://motleybio-references/ \
+rclone copy gcs:motleybio/Resources/ s3://motleybio/ \
   --progress \
   --checksum \
   --transfers 4
 
 # Verify transfer
-rclone check gcs:motleybio/Resources/ s3://motleybio-references/ \
+rclone check gcs:motleybio/Resources/ s3://motleybio/ \
   --one-way
 ```
 
@@ -619,12 +619,12 @@ rclone check gcs:motleybio/Resources/ s3://motleybio-references/ \
       // genome_fasta = "gs://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
 
       // NEW (S3):
-      genome_fasta = "s3://motleybio-references/fasta/GRCh38_full_analysis_set_plus_decoy_hla.fa"
-      transcriptome_fasta = "s3://motleybio-references/fasta/RSEM_hg38.transcripts.fa"
-      annotation_gtf = "s3://motleybio-references/gtf/Homo_sapiens.GRCh38.112.chr_label.gtf"
+      genome_fasta = "s3://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
+      transcriptome_fasta = "s3://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa"
+      annotation_gtf = "s3://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf"
 
       // Update cache directory to use S3
-      reference_cache_dir = "s3://motleybio-references"
+      cloud_reference_cache = "s3://motleybio/Workspaces/Marcus/methyltna_references"
   }
   ```
 
@@ -798,9 +798,9 @@ annotation_gtf:      gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_la
 
 ### New AWS Paths (to be created)
 ```
-genome_fasta:        s3://motleybio-references/fasta/GRCh38_full_analysis_set_plus_decoy_hla.fa
-transcriptome_fasta: s3://motleybio-references/fasta/RSEM_hg38.transcripts.fa
-annotation_gtf:      s3://motleybio-references/gtf/Homo_sapiens.GRCh38.112.chr_label.gtf
+genome_fasta:        s3://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa
+transcriptome_fasta: s3://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa
+annotation_gtf:      s3://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf
 ```
 
 ### Cost Estimates
