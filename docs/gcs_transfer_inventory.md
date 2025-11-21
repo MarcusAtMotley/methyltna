@@ -9,8 +9,8 @@
 ## Transfer Items
 
 ### 1. ASSAY_DEVELOPMENT Data (Priority: HIGH)
-**Source:** `gs://motleybio/Laboratory/ASSAY_DEVELOPMENT`
-**Destination:** `s3://motleybio-data/Laboratory/ASSAY_DEVELOPMENT`
+**Source:** `gs://motleybio/Laboratory/ASSAY_DEVELOPMENT/`
+**Destination:** `s3://motleybio/Laboratory/ASSAY_DEVELOPMENT/`
 **Size:** 3.63 TiB (3,897 GiB)
 **Priority:** Must transfer - primary assay development data
 **Contains:** Experimental data, analysis outputs, validation results
@@ -19,7 +19,7 @@
 ```bash
 rclone sync \
   gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
   --progress --stats 30s --transfers 16 --checkers 32 --checksum \
   --log-file ~/rclone-assay-dev-$(date +%Y%m%d-%H%M%S).log
 ```
@@ -30,21 +30,21 @@ rclone sync \
 
 #### 2a. GRCh38 Genome FASTA
 **Source:** `gs://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa`
-**Destination:** `s3://motleybio-references/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa`
+**Destination:** `s3://motleybio/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa`
 **Size:** 3.04 GiB
 **Priority:** Must transfer - required for methylTNA pipeline
 **Used by:** STAR alignment, Biscuit methylation, variant calling
 
 #### 2b. RSEM Transcriptome FASTA
 **Source:** `gs://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa`
-**Destination:** `s3://motleybio-references/RSEM_Genome/RSEM_hg38.transcripts.fa`
+**Destination:** `s3://motleybio/RSEM_Genome/RSEM_hg38.transcripts.fa`
 **Size:** 427.63 MiB
 **Priority:** Must transfer - required for methylTNA pipeline
 **Used by:** RNA quantification, transcript-level analysis
 
 #### 2c. Homo sapiens Annotation GTF
 **Source:** `gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf`
-**Destination:** `s3://motleybio-references/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf`
+**Destination:** `s3://motleybio/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf`
 **Size:** 1.41 GiB
 **Priority:** Must transfer - required for methylTNA pipeline
 **Used by:** STAR genome generation, feature counting, annotation
@@ -62,7 +62,7 @@ rclone sync \
 
 ### 3. Pre-built Indexes Cache (Priority: MEDIUM)
 **Source:** `gs://motleybio/Workspaces/Marcus/methyltna_references`
-**Destination:** `s3://motleybio-references/methyltna_references`
+**Destination:** `s3://motleybio/methyltna_references`
 **Size:** 55.74 GiB
 **Priority:** Optional - saves ~2-3 hours of index building on first run
 **Contains:** Pre-built STAR indexes, Biscuit indexes, FASTA indexes
@@ -140,7 +140,7 @@ rclone sync \
 - [ ] **Step 1.2:** Transfer reference genome files (4.87 GiB)
   - Can run in parallel with Step 1.1
   - Estimated: 5-10 minutes
-  - Quick verification: `aws s3 ls s3://motleybio-references/Resources/`
+  - Quick verification: `aws s3 ls s3://motleybio/Resources/`
 
 ### Phase 2: Optional Items (Performance Optimization)
 - [ ] **Step 2.1:** Transfer pre-built indexes (55.74 GiB)
@@ -152,24 +152,24 @@ rclone sync \
 - [ ] **Step 3.1:** Verify ASSAY_DEVELOPMENT transfer
   ```bash
   rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
-    s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+    s3:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
     --one-way --checksum
   ```
 
 - [ ] **Step 3.2:** Verify reference files transfer
   ```bash
   rclone check gcs:motleybio/Resources/ \
-    s3:motleybio-references/Resources/ \
+    s3:motleybio/Resources/ \
     --one-way --checksum
   ```
 
 - [ ] **Step 3.3:** Update methylTNA nextflow.config with S3 paths
   ```groovy
   params {
-      genome_fasta = "s3://motleybio-references/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
-      transcriptome_fasta = "s3://motleybio-references/RSEM_Genome/RSEM_hg38.transcripts.fa"
-      annotation_gtf = "s3://motleybio-references/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf"
-      cloud_reference_cache = "s3://motleybio-references/methyltna_references"
+      genome_fasta = "s3://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
+      transcriptome_fasta = "s3://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa"
+      annotation_gtf = "s3://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf"
+      cloud_reference_cache = "s3://motleybio/Workspaces/Marcus/methyltna_references"
   }
   ```
 
