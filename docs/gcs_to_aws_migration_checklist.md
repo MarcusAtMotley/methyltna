@@ -86,97 +86,358 @@ This checklist guides the migration of the methyltna pipeline from the GCS VM de
   2. _________________________________ (reason: _________________)
   3. _________________________________ (reason: _________________)
 
-### 1.4 GCS Bucket to AWS S3 Transfer Strategy
+### 1.4 GCS to AWS S3 Transfer with rclone
 
-**Overview:** Transfer pipeline outputs and reference files from GCS to S3
+**Overview:** Transfer ASSAY_DEVELOPMENT data from GCS to S3 using rclone
 
-**Transfer Methods Available:**
+**Source:** `gs://motleybio/Laboratory/ASSAY_DEVELOPMENT`
+**Destination:** `s3://motleybio-data/Laboratory/ASSAY_DEVELOPMENT`
+**Estimated Size:** ~10TB
+**Estimated Cost:** ~$1,137 GCS egress (covered by GCS credits)
 
-#### **Method 1: AWS DataSync (Recommended for Large Transfers)**
-- **Best for:** Large buckets (>100GB), one-time bulk migrations
-- **Pros:** Fast, automated, handles retries, validates data integrity
-- **Cons:** Requires AWS DataSync agent setup
-- **Cost:** ~$0.0125/GB transferred
+**Why rclone?**
+- ✅ Free tool (only pay GCS egress fees)
+- ✅ Direct cloud-to-cloud transfer (no intermediate storage needed)
+- ✅ Resumable transfers (critical for multi-TB data)
+- ✅ Built-in integrity verification (MD5/SHA256 checksums)
+- ✅ Configurable parallelism for optimal throughput
+- ✅ Works from any machine (local, VM, EC2)
 
+---
+
+#### Step 1: Install rclone
+
+**On Linux/macOS:**
 ```bash
-# Setup (AWS Console):
-# 1. Create DataSync agent in AWS region
-# 2. Configure GCS as source location
-# 3. Configure S3 as destination
-# 4. Create and run transfer task
-
-# Example: Transfer entire bucket
-# Source: gs://motleybio/
-# Destination: s3://motleybio-data/
-```
-
-#### **Method 2: rclone (Recommended for Flexibility)**
-- **Best for:** Selective transfers, custom filtering, resumable transfers
-- **Pros:** Free, flexible, cross-cloud native, resumable
-- **Cons:** Requires local installation/configuration
-- **Cost:** Only egress from GCS (~$0.12/GB) + S3 storage
-
-```bash
-# Install rclone
+# Install latest version
 curl https://rclone.org/install.sh | sudo bash
 
-# Configure remotes
+# Verify installation
+rclone version
+```
+
+**On Windows:**
+```powershell
+# Download from: https://rclone.org/downloads/
+# Or use chocolatey:
+choco install rclone
+```
+
+---
+
+#### Step 2: Configure GCS Remote
+
+Run the interactive configuration:
+```bash
 rclone config
-# Add GCS remote: name it "gcs"
-# Add S3 remote: name it "s3"
+```
 
-# Test connection
-rclone ls gcs:motleybio/ --max-depth 1
-rclone ls s3:motleybio-data/ --max-depth 1
+**Configuration steps:**
+1. Type `n` for "New remote"
+2. Name: `gcs` (or any name you prefer)
+3. Storage type: `13` (Google Cloud Storage)
+4. Choose authentication method:
+   - **Option 1 (Recommended):** Application Default Credentials
+     - Select: `1` (Use Application Default Credentials)
+     - Requires: `gcloud auth application-default login`
+   - **Option 2:** Service Account
+     - Select: `2` (Service account credentials from JSON file)
+     - Provide path to service account JSON key
+5. Project ID: `steadfast-task-442320-r7`
+6. Location/Region: leave blank (use bucket's region)
+7. Storage class: leave blank
+8. Advanced config: `n` (No)
+9. Confirm: `y` (Yes)
 
-# Transfer with progress
-rclone sync gcs:motleybio/ s3://motleybio-data/ \
+**Test GCS connection:**
+```bash
+# List top-level contents
+rclone lsd gcs:motleybio/
+
+# Check ASSAY_DEVELOPMENT directory exists
+rclone ls gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ --max-depth 1
+
+# Get size and file count
+rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
+```
+
+---
+
+#### Step 3: Configure AWS S3 Remote
+
+Continue in `rclone config`:
+```bash
+rclone config
+```
+
+**Configuration steps:**
+1. Type `n` for "New remote"
+2. Name: `s3` (or any name you prefer)
+3. Storage type: `5` (Amazon S3)
+4. Provider: `1` (AWS)
+5. Credentials:
+   - **Option 1 (Recommended):** From environment
+     - Select: `1` (Enter AWS credentials in the next step)
+     - Access Key ID: `<your-aws-access-key>`
+     - Secret Access Key: `<your-aws-secret-key>`
+   - **Option 2:** From AWS credentials file
+     - Select: `2` (Get AWS credentials from environment)
+     - Requires: `aws configure` already set up
+6. Region: `us-east-1` (or your preferred AWS region)
+7. Endpoint: leave blank (use default AWS endpoints)
+8. Location constraint: leave blank
+9. ACL: `private` (recommended)
+10. Storage class: `STANDARD` (or `INTELLIGENT_TIERING` for cost optimization)
+11. Advanced config: `n` (No)
+12. Confirm: `y` (Yes)
+
+**Test S3 connection:**
+```bash
+# List buckets
+rclone lsd s3:
+
+# Create destination bucket (if needed)
+aws s3 mb s3://motleybio-data --region us-east-1
+
+# Test write access
+rclone touch s3:motleybio-data/test.txt
+rclone delete s3:motleybio-data/test.txt
+```
+
+---
+
+#### Step 4: Pre-Transfer Verification
+
+**Calculate exact size and file count:**
+```bash
+# Get detailed size information
+rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
+
+# Expected output:
+# Total objects: XXXXXX
+# Total size: XX.XXX TiB (XXXXXXXXXXX Bytes)
+```
+
+**Estimate transfer cost:**
+```bash
+# GCS egress pricing (North America):
+# First 1 TiB:   $0.12/GiB = $122.88
+# Next 9 TiB:    $0.11/GiB = $1,014.17
+# Above 10 TiB:  $0.085/GiB
+#
+# For 10TB total: ~$1,137 (covered by GCS credits ✓)
+```
+
+**Dry-run (simulate transfer without moving data):**
+```bash
+# This shows what WOULD be transferred without actually doing it
+rclone sync gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --dry-run \
   --progress \
+  --stats 10s
+```
+
+---
+
+#### Step 5: Execute Transfer
+
+**Recommended command with optimized settings:**
+```bash
+rclone sync \
+  gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --progress \
+  --stats 30s \
+  --transfers 16 \
+  --checkers 32 \
   --checksum \
-  --transfers 8 \
-  --checkers 16 \
-  --log-file transfer.log
-
-# For large transfers, use --dry-run first!
-rclone sync gcs:motleybio/ s3://motleybio-data/ --dry-run
+  --log-file ~/rclone-transfer-$(date +%Y%m%d-%H%M%S).log \
+  --log-level INFO \
+  --retries 5 \
+  --low-level-retries 10 \
+  --buffer-size 64M \
+  --s3-upload-concurrency 8 \
+  --s3-chunk-size 16M
 ```
 
-#### **Method 3: gsutil + AWS CLI (Simple, Two-Step)**
-- **Best for:** Small-medium datasets, one-off transfers
-- **Pros:** Uses existing tools, straightforward
-- **Cons:** Two-step process (download → upload), requires disk space
-- **Cost:** GCS egress + temporary storage
+**Parameter explanations:**
+- `--progress`: Show real-time progress bar
+- `--stats 30s`: Print statistics every 30 seconds
+- `--transfers 16`: Transfer 16 files in parallel (adjust based on bandwidth)
+- `--checkers 32`: Check 32 file hashes in parallel
+- `--checksum`: Verify data integrity with MD5/SHA256 checksums
+- `--log-file`: Save detailed logs for troubleshooting
+- `--retries 5`: Retry failed operations up to 5 times
+- `--buffer-size 64M`: Use 64MB memory buffer per transfer
+- `--s3-upload-concurrency 8`: Upload 8 chunks per file in parallel
+- `--s3-chunk-size 16M`: Split large files into 16MB chunks
 
+**Alternative: Copy instead of Sync (safer for first transfer):**
 ```bash
-# Step 1: Download from GCS to local/EC2
-gsutil -m cp -r gs://motleybio/path/ /tmp/transfer/
-
-# Step 2: Upload to S3
-aws s3 sync /tmp/transfer/ s3://motleybio-data/path/ \
-  --storage-class STANDARD
-
-# Clean up
-rm -rf /tmp/transfer/
+# Copy doesn't delete anything from destination
+rclone copy \
+  gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --progress \
+  --stats 30s \
+  --transfers 16 \
+  --checkers 32 \
+  --checksum \
+  --log-file ~/rclone-transfer-$(date +%Y%m%d-%H%M%S).log \
+  --log-level INFO
 ```
 
-#### **Method 4: Google Transfer Service to S3 (Official)**
-- **Best for:** Very large transfers (multi-TB), managed service
-- **Pros:** Google-managed, optimized routes, no egress charges
-- **Cons:** Requires Google Cloud Console setup, AWS credentials in GCP
-- **Cost:** Free for transfers, only pay S3 storage
-
+**For running in background (recommended for large transfers):**
 ```bash
-# Setup (GCP Console):
-# 1. Go to Cloud Console > Transfer Service
-# 2. Create transfer job
-# 3. Source: Cloud Storage bucket
-# 4. Destination: AWS S3 (provide IAM credentials)
-# 5. Schedule and run
+# Use screen or tmux to keep transfer running if SSH disconnects
+screen -S rclone-transfer
+
+# Inside screen session, run transfer command
+rclone sync gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --progress --stats 30s --transfers 16 --checkers 32 --checksum \
+  --log-file ~/rclone-transfer-$(date +%Y%m%d-%H%M%S).log
+
+# Detach from screen: Ctrl+A, then D
+# Re-attach later: screen -r rclone-transfer
 ```
 
-**Recommended Approach:**
-- [ ] Use **rclone** for reference files and selective data (~44GB, flexible)
-- [ ] Use **AWS DataSync** or **Google Transfer Service** for bulk pipeline outputs (multi-TB)
+---
+
+#### Step 6: Monitor Progress
+
+**Real-time monitoring:**
+```bash
+# If running in foreground, progress shows automatically
+
+# If running in background, monitor log file:
+tail -f ~/rclone-transfer-*.log
+
+# Watch statistics:
+watch -n 10 'tail -50 ~/rclone-transfer-*.log | grep -A 20 "Transferred:"'
+```
+
+**Check transfer status:**
+```bash
+# Compare object counts between source and destination
+rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
+rclone size s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/
+
+# List any differences
+rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --one-way
+```
+
+**Estimated transfer time:**
+```
+Assuming:
+- 10TB total data
+- Average 500 Mbps network throughput
+- 16 parallel transfers
+
+Estimated time: ~48-72 hours (2-3 days)
+```
+
+---
+
+#### Step 7: Post-Transfer Verification
+
+**Verify data integrity:**
+```bash
+# Full comparison (can take hours for large datasets)
+rclone check gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/ \
+  s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/ \
+  --one-way \
+  --checksum \
+  --log-file ~/rclone-verify-$(date +%Y%m%d-%H%M%S).log
+
+# Expected output: "0 differences found" ✓
+```
+
+**Sample file verification:**
+```bash
+# Compare checksums of a few large files manually
+rclone md5sum gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/sample.bam
+rclone md5sum s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/sample.bam
+```
+
+**Verify file count and size match:**
+```bash
+# GCS
+rclone size gcs:motleybio/Laboratory/ASSAY_DEVELOPMENT/
+
+# S3
+rclone size s3:motleybio-data/Laboratory/ASSAY_DEVELOPMENT/
+
+# Should show identical:
+# - Total objects: XXXXXX
+# - Total size: XX.XXX TiB
+```
+
+---
+
+#### Step 8: Cleanup
+
+**After successful verification:**
+- [ ] Archive transfer logs:
+  ```bash
+  tar -czf rclone-transfer-logs-$(date +%Y%m%d).tar.gz ~/rclone-*.log
+  aws s3 cp rclone-transfer-logs-*.tar.gz s3://motleybio-archive/migration-logs/
+  rm ~/rclone-*.log
+  ```
+
+- [ ] Update migration checklist:
+  - Mark section 1.4 as complete ✓
+  - Document actual transfer time, size, and any issues
+
+- [ ] (Optional) Keep GCS data for 30 days as backup before deletion
+
+---
+
+#### Troubleshooting
+
+**Issue: Transfer stalls or fails**
+```bash
+# Check network connectivity
+rclone about gcs:motleybio/
+rclone about s3:motleybio-data/
+
+# Reduce parallelism if overwhelming network
+rclone sync ... --transfers 4 --checkers 8
+```
+
+**Issue: "403 Forbidden" errors**
+```bash
+# GCS: Re-authenticate
+gcloud auth application-default login
+
+# S3: Verify credentials
+aws sts get-caller-identity
+```
+
+**Issue: Slow transfer speeds**
+```bash
+# Test bandwidth
+rclone test speed gcs:motleybio/ s3:motleybio-data/
+
+# Increase parallelism (if you have bandwidth)
+rclone sync ... --transfers 32 --checkers 64
+
+# Enable multi-part uploads for large files
+rclone sync ... --s3-upload-concurrency 16
+```
+
+**Issue: Out of memory**
+```bash
+# Reduce buffer sizes
+rclone sync ... --buffer-size 16M --transfers 4
+```
+
+---
+
+**Recommended Approach:** Use rclone for the entire transfer (cost-effective with GCS credits)
 
 ### 1.5 Transfer Reference Files to S3
 
