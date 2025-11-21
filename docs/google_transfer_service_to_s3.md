@@ -247,24 +247,53 @@ gsutil iam ch serviceAccount:${TRANSFER_SA}:legacyBucketReader gs://motleybio/
 
 ## Creating the Transfer Job
 
+### ⚠️ IMPORTANT: Make Sure You're Using the Correct Service!
+
+**Google has TWO different transfer services with similar names:**
+
+| Service | Use For | Destinations Available |
+|---------|---------|------------------------|
+| ❌ **Transfer Service** | On-premises → GCS | Google Cloud Storage, POSIX filesystem |
+| ✅ **Storage Transfer Service** | GCS ↔ S3, GCS ↔ Azure | **Amazon S3**, Azure, Google Cloud Storage |
+
+**You MUST use "Storage Transfer Service" for GCS → S3 transfers!**
+
+### How to Access the Correct Service
+
+**Direct URL (Recommended):**
+```
+https://console.cloud.google.com/transfer/cloud
+```
+
+**Or navigate manually:**
+1. GCP Console → Search bar → Type "**Storage Transfer Service**"
+2. Or: **Cloud Storage** → **Transfer** → **"Cloud"** tab (NOT "On-premises")
+
+**Verify you're in the right place:**
+- When creating a transfer job, you should see **"Amazon S3"** as a destination option
+- URL should contain `/transfer/cloud` (not just `/transfer`)
+
 ### Option 1: Using GCP Console (Recommended for First Time)
 
 This is the easiest way to set up your first transfer:
 
-1. **Navigate to Transfer Service:**
-   - Go to: https://console.cloud.google.com/transfer
-   - Or: GCP Console → Cloud Storage → Transfer
+1. **Navigate to Storage Transfer Service:**
+   - **Direct URL**: https://console.cloud.google.com/transfer/cloud
+   - **Or**: GCP Console → Cloud Storage → Transfer → **"Cloud" tab**
+   - **Verify**: URL should be `.../transfer/cloud`, NOT just `.../transfer`
 
 2. **Create Transfer Job:**
    - Click **"Create Transfer Job"**
+   - **Verify**: You should see **"Amazon S3"** in the destination options!
+   - If you only see "Google Cloud Storage" and "POSIX filesystem", you're in the wrong service!
 
 3. **Source Configuration:**
-   - **Source type**: Google Cloud Storage
+   - **Source type**: **Google Cloud Storage** ← Select this
    - **Source bucket**: `motleybio` (or your bucket name)
    - **Source path (optional)**: Leave blank for entire bucket, or specify path like `results/mot26/`
 
 4. **Destination Configuration:**
-   - **Destination type**: Amazon S3
+   - **Destination type**: **Amazon S3** ← You should see this option!
    - **AWS access key ID**: (paste from Step 2 above)
    - **AWS secret access key**: (paste from Step 2 above)
    - **S3 bucket name**: `motleybio-data`
@@ -924,8 +953,8 @@ gsutil ls -r gs://motleybio/results/mot26/ | wc -l
 
 ### Using GCP Console
 
-1. **Navigate to Transfer Jobs:**
-   - https://console.cloud.google.com/transfer/jobs
+1. **Navigate to Storage Transfer Service:**
+   - https://console.cloud.google.com/transfer/cloud/jobs
 
 2. **View Job Status:**
    - Click on your transfer job name
@@ -1291,7 +1320,7 @@ gcloud transfer operations list \
 
 ### URLs
 
-- **GCP Transfer Console**: https://console.cloud.google.com/transfer
+- **Storage Transfer Service Console**: https://console.cloud.google.com/transfer/cloud
 - **GCP Transfer Documentation**: https://cloud.google.com/storage-transfer/docs/aws-s3-transfer
 - **AWS IAM Console**: https://console.aws.amazon.com/iam/
 - **AWS S3 Console**: https://console.aws.amazon.com/s3/
