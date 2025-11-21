@@ -363,6 +363,563 @@ gcloud transfer jobs list
 
 ---
 
+## Transferring Specific Parts of Buckets
+
+**One of the most powerful features:** You can transfer specific directories, exclude unwanted files, and filter by time - crucial for managing dozens of TB efficiently!
+
+### Why Partial Transfers Matter
+
+Pipeline outputs typically contain:
+- **5-10% final results** (MultiQC, VCFs, methylation calls) ← Transfer these
+- **20-30% intermediate files** (BAMs, sorted files) ← Maybe transfer
+- **60-70% working files** (Nextflow work/, temp/, cache/) ← Skip these!
+
+**Example:** A 50TB bucket with work directories can be reduced to 15TB by excluding regenerable files:
+- **Transfer time**: 3 days → 18 hours (60% faster)
+- **S3 storage cost**: $1,150/month → $345/month (70% savings)
+- **No data loss**: Work directories are fully regenerable by pipeline
+
+### Filtering Methods
+
+#### **Method 1: Source Path (Single Directory)**
+
+Transfer only a specific directory within the bucket:
+
+**Using GCP Console:**
+- Source bucket: `motleybio`
+- Source path: `results/mot26/` ← Only transfers this directory
+
+**Using CLI:**
+```json
+"gcsDataSource": {
+  "bucketName": "motleybio",
+  "path": "results/mot26/"
+}
+```
+
+**Result:** Transfers `gs://motleybio/results/mot26/*` only
+
+#### **Method 2: Include Prefixes (Multiple Specific Paths)**
+
+Transfer multiple specific directories:
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "results/mot26/",
+    "results/mot30/",
+    "references/",
+    "important_outputs/"
+  ]
+}
+```
+
+**Result:** Transfers ONLY files matching these prefixes. Everything else is skipped.
+
+**Example Use Cases:**
+- Transfer specific run outputs: `"results/mot26/"`, `"results/mot30/"`
+- Transfer only reference files: `"Resources/reference_genome/"`, `"Resources/GTF/"`
+- Transfer only final outputs: `"results/*/multiqc/"`, `"results/*/variants/"`
+
+#### **Method 3: Exclude Prefixes (Skip Unwanted Data)**
+
+Transfer everything EXCEPT certain paths - **most useful for skipping work directories:**
+
+```json
+"objectConditions": {
+  "excludePrefixes": [
+    "work/",                    // Skip Nextflow work directories
+    "temp/",                    // Skip temporary files
+    ".nextflow/",               // Skip Nextflow cache
+    "cache/",                   // Skip cache directories
+    "logs/",                    // Skip log files
+    "*/work/",                  // Skip work dirs at any level
+    "*/.nextflow/",             // Skip .nextflow at any level
+    "results/*/work/",          // Skip work within results
+    "intermediate/",            // Skip intermediate outputs
+    "scratch/"                  // Skip scratch space
+  ]
+}
+```
+
+**Pipeline-Specific Exclusions (Recommended):**
+```json
+"excludePrefixes": [
+  "work/",
+  ".nextflow/",
+  "*/work/",
+  "*/.nextflow/",
+  "*.log",
+  "*/trimgalore/*.fq.gz",     // Skip trimmed FASTQs (regenerable)
+  "*/fastqc/*.zip",           // Skip FastQC archives (keep HTML)
+  "*/star/*Aligned.out.sam",  // Skip unsorted SAM files
+  "*/temp/",
+  "*/cache/"
+]
+```
+
+**Result:** Transfers entire bucket minus excluded paths - can reduce size by 60-80%!
+
+#### **Method 4: Combine Include + Exclude (Most Powerful)**
+
+Include specific areas, but exclude waste within them:
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "results/mot26/",
+    "results/mot30/"
+  ],
+  "excludePrefixes": [
+    "results/mot26/work/",
+    "results/mot26/temp/",
+    "results/mot26/.nextflow/",
+    "results/mot30/work/",
+    "results/mot30/temp/",
+    "results/mot30/.nextflow/"
+  ]
+}
+```
+
+**Result:** Transfers mot26 and mot30 outputs, but skips work/temp/cache within each - best of both worlds!
+
+#### **Method 5: Time-Based Filtering**
+
+Transfer only files modified within a time range:
+
+**Recent files only (last 30 days):**
+```json
+"objectConditions": {
+  "maxTimeElapsedSinceLastModification": "2592000s"  // 30 days in seconds
+}
+```
+
+**Files modified after a specific date:**
+```json
+"objectConditions": {
+  "lastModifiedSince": "2025-01-01T00:00:00Z",
+  "lastModifiedBefore": "2025-11-20T00:00:00Z"
+}
+```
+
+**Use cases:**
+- Incremental transfers: Only get files created since last transfer
+- Archive old data: Transfer only files older than 1 year to Glacier
+- Recent results only: Skip old runs, transfer current analysis
+
+#### **Method 6: Combine Multiple Filters**
+
+Stack all filters for maximum control:
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "results/mot26/",
+    "results/mot30/"
+  ],
+  "excludePrefixes": [
+    "results/mot26/work/",
+    "results/mot30/work/"
+  ],
+  "lastModifiedSince": "2025-01-01T00:00:00Z"
+}
+```
+
+**Result:** Transfer mot26 and mot30 (without work dirs), but only files created in 2025!
+
+### Practical Examples for Pipeline Data
+
+#### **Example 1: Transfer Only Final Outputs (Skip All Working Files)**
+
+**Goal:** Transfer results, skip all intermediate/working files
+
+```json
+{
+  "transferSpec": {
+    "gcsDataSource": {
+      "bucketName": "motleybio"
+    },
+    "awsS3DataSink": {
+      "bucketName": "motleybio-data"
+    },
+    "objectConditions": {
+      "excludePrefixes": [
+        "work/",
+        ".nextflow/",
+        "cache/",
+        "temp/",
+        "*/work/",
+        "*/.nextflow/",
+        "*/temp/",
+        "*/cache/",
+        "intermediate/",
+        "scratch/",
+        "*/.command.*",
+        "*.log"
+      ]
+    }
+  }
+}
+```
+
+**Potential Savings:** 50TB → 10TB (80% reduction)
+
+#### **Example 2: Transfer Specific Run Outputs Only**
+
+**Goal:** Transfer only QC reports, methylation data, and variants from specific runs
+
+```json
+{
+  "transferSpec": {
+    "gcsDataSource": {
+      "bucketName": "motleybio"
+    },
+    "awsS3DataSink": {
+      "bucketName": "motleybio-data"
+    },
+    "objectConditions": {
+      "includePrefixes": [
+        "results/mot26/multiqc/",
+        "results/mot26/methylation/",
+        "results/mot26/variants/",
+        "results/mot26/pipeline_info/",
+        "results/mot30/multiqc/",
+        "results/mot30/methylation/",
+        "results/mot30/variants/",
+        "results/mot30/pipeline_info/"
+      ]
+    }
+  }
+}
+```
+
+**Potential Savings:** 50TB → 2TB (96% reduction) - only critical outputs!
+
+#### **Example 3: Transfer Everything Except Work Directories**
+
+**Goal:** Keep all outputs but skip regenerable working files
+
+```json
+{
+  "transferSpec": {
+    "gcsDataSource": {
+      "bucketName": "motleybio"
+    },
+    "awsS3DataSink": {
+      "bucketName": "motleybio-data"
+    },
+    "objectConditions": {
+      "excludePrefixes": [
+        "work/",
+        ".nextflow/",
+        "*/work/",
+        "*/.nextflow/"
+      ]
+    }
+  }
+}
+```
+
+**Potential Savings:** 50TB → 20TB (60% reduction) - balanced approach
+
+#### **Example 4: Incremental Transfer (Only New Data)**
+
+**Goal:** Transfer only files created in the last 7 days (useful for ongoing migrations)
+
+```json
+{
+  "transferSpec": {
+    "gcsDataSource": {
+      "bucketName": "motleybio"
+    },
+    "awsS3DataSink": {
+      "bucketName": "motleybio-data"
+    },
+    "objectConditions": {
+      "maxTimeElapsedSinceLastModification": "604800s",  // 7 days
+      "excludePrefixes": [
+        "work/",
+        "*/.nextflow/"
+      ]
+    }
+  }
+}
+```
+
+**Use case:** Already transferred old data, now get new runs without re-transferring everything
+
+#### **Example 5: Transfer References and Recent Results Only**
+
+**Goal:** Get references + recent pipeline outputs for AWS testing
+
+```json
+{
+  "transferSpec": {
+    "gcsDataSource": {
+      "bucketName": "motleybio"
+    },
+    "awsS3DataSink": {
+      "bucketName": "motleybio-data"
+    },
+    "objectConditions": {
+      "includePrefixes": [
+        "Resources/",
+        "results/"
+      ],
+      "excludePrefixes": [
+        "results/*/work/",
+        "results/*/.nextflow/"
+      ],
+      "lastModifiedSince": "2025-10-01T00:00:00Z"
+    }
+  }
+}
+```
+
+**Potential Savings:** 50TB → 5TB - perfect for initial AWS setup!
+
+### Using Console UI for Partial Transfers
+
+**Step-by-step in GCP Console:**
+
+1. **Create Transfer Job** → **Source Configuration:**
+   - Source bucket: `motleybio`
+   - **Source path (optional)**: Enter specific directory like `results/mot26/`
+
+2. **Destination Configuration:**
+   - Destination bucket: `motleybio-data`
+   - S3 bucket path: Leave blank or specify subdirectory
+
+3. **Click "Advanced options"** to expand filtering:
+
+   **Include prefixes:**
+   - Click "+ Add prefix"
+   - Add each path to include: `results/mot26/`, `results/mot30/`, etc.
+   - Only files matching these prefixes will transfer
+
+   **Exclude prefixes:**
+   - Click "+ Add prefix"
+   - Add each path to exclude: `work/`, `.nextflow/`, `*/work/`, etc.
+   - Files matching these will be skipped
+
+4. **Object conditions (further down):**
+   - **Created after**: Date picker for recent files
+   - **Created before**: Date picker for old files
+
+5. **Review filtering impact:**
+   - Console shows estimated object count based on filters
+   - Verify the count matches expectations before starting
+
+**No JSON needed** - just fill in the form fields!
+
+### Phased Migration Strategy for Dozens of TB
+
+**Recommended approach for large-scale migrations:**
+
+#### **Phase 1: References & Small Data (Immediate - Day 1)**
+
+**Purpose:** Get AWS pipeline working quickly
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "Resources/",
+    "references/"
+  ]
+}
+```
+
+- **Size**: ~10-50GB
+- **Time**: <2 hours
+- **Priority**: CRITICAL (needed for AWS testing)
+
+#### **Phase 2: Recent Important Runs (Week 1)**
+
+**Purpose:** Transfer active analysis data
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "results/mot26/",
+    "results/mot30/"
+  ],
+  "excludePrefixes": [
+    "results/mot26/work/",
+    "results/mot30/work/",
+    "results/*/.nextflow/"
+  ]
+}
+```
+
+- **Size**: 50TB → 10TB (with exclusions)
+- **Time**: 12-24 hours
+- **Priority**: HIGH (current projects)
+
+#### **Phase 3: Additional Results (Week 2)**
+
+**Purpose:** Transfer remaining valuable outputs
+
+```json
+"objectConditions": {
+  "includePrefixes": [
+    "results/"
+  ],
+  "excludePrefixes": [
+    "results/mot26/",      // Already transferred
+    "results/mot30/",      // Already transferred
+    "results/*/work/",
+    "results/*/.nextflow/",
+    "results/*/temp/"
+  ]
+}
+```
+
+- **Size**: Variable (depends on remaining runs)
+- **Time**: 1-2 days
+- **Priority**: MEDIUM
+
+#### **Phase 4: Archives (After AWS Validation)**
+
+**Purpose:** Deep archive old data to Glacier
+
+```json
+"objectConditions": {
+  "lastModifiedBefore": "2024-01-01T00:00:00Z",  // Old data
+  "excludePrefixes": [
+    "work/",
+    "*/.nextflow/"
+  ]
+},
+"transferOptions": {
+  "s3StorageClass": "GLACIER_DEEP_ARCHIVE"  // $1/TB/month
+}
+```
+
+- **Size**: Variable
+- **Time**: Days (low priority)
+- **Priority**: LOW
+- **Cost**: Ultra-cheap ($1/TB/month vs $23/TB standard)
+
+### Estimating Impact of Filters
+
+**Before creating transfer job, estimate data reduction:**
+
+```bash
+# Check total bucket size
+gsutil du -sh gs://motleybio/
+
+# Check size of specific paths to include
+gsutil du -sh gs://motleybio/results/mot26/
+gsutil du -sh gs://motleybio/results/mot30/
+
+# Check size of paths you're excluding (work directories)
+gsutil du -sh gs://motleybio/work/
+gsutil du -sh gs://motleybio/results/*/work/
+
+# Calculate savings
+# Example:
+# Total: 50TB
+# work/ directories: 35TB
+# Expected transfer: 15TB (70% savings!)
+```
+
+**Cost/Time Comparison:**
+
+| Scenario | Data Size | Transfer Time | S3 Cost/Month | Approach |
+|----------|-----------|---------------|---------------|----------|
+| No filtering | 50TB | 2-3 days | $1,150 | ❌ Wasteful |
+| Exclude work/ | 15TB | 18 hours | $345 | ✅ Good |
+| Only final outputs | 5TB | 6 hours | $115 | ✅ Best for testing |
+| References only | 10GB | 1 hour | $0.23 | ✅ Quick start |
+
+### Best Practices for Filtering
+
+1. **Start small, expand later:**
+   - Transfer references first (test AWS pipeline)
+   - Then transfer one run completely
+   - Validate before transferring everything
+
+2. **Always exclude work directories:**
+   - Work directories are 60-80% of pipeline data
+   - Fully regenerable by running pipeline
+   - Zero impact on reproducibility
+
+3. **Use dry-run approach:**
+   - Create transfer job
+   - Check estimated object count
+   - If count seems wrong, adjust filters
+   - Delete and recreate job until filters are correct
+
+4. **Document your filters:**
+   - Save filter configurations
+   - Note why each path is included/excluded
+   - Helps with future incremental transfers
+
+5. **Combine filters thoughtfully:**
+   - Include prefixes = "only these"
+   - Exclude prefixes = "except these"
+   - Both together = "only these, except these parts"
+
+6. **Plan for incrementals:**
+   - After initial transfer, use time-based filters
+   - Only transfer new files created since last sync
+   - Saves re-transferring unchanged data
+
+### Testing Your Filters
+
+**Before transferring dozens of TB, test with small subset:**
+
+```bash
+# 1. Create test transfer job with filters
+# 2. Use small source path to test
+"gcsDataSource": {
+  "bucketName": "motleybio",
+  "path": "results/mot26/"  # Just one run
+}
+
+# 3. Run transfer
+# 4. Validate results:
+aws s3 ls s3://motleybio-data/results/mot26/ --recursive | wc -l
+gsutil ls -r gs://motleybio/results/mot26/ | wc -l
+
+# 5. If counts match and content is correct, scale up filters
+```
+
+### Common Filtering Patterns
+
+**Skip all intermediate files:**
+```json
+"excludePrefixes": [
+  "work/", ".nextflow/", "cache/", "temp/", "*/work/",
+  "*/.nextflow/", "*/temp/", "*/cache/", "intermediate/",
+  "*.log", "*/.command.*", "scratch/"
+]
+```
+
+**Transfer only specific file types (using path patterns):**
+```json
+"includePrefixes": [
+  "results/*/multiqc/multiqc_report.html",
+  "results/*/variants/*.vcf.gz",
+  "results/*/methylation/*.bedGraph",
+  "results/*/pipeline_info/"
+]
+```
+
+**Incremental daily sync:**
+```json
+"objectConditions": {
+  "maxTimeElapsedSinceLastModification": "86400s",  // Last 24 hours
+  "excludePrefixes": ["work/", "*/.nextflow/"]
+},
+"schedule": {
+  "startTimeOfDay": {"hours": 2, "minutes": 0},
+  "repeatInterval": "86400s"  // Run daily at 2 AM
+}
+```
+
+---
+
 ## Monitoring the Transfer
 
 ### Using GCP Console
