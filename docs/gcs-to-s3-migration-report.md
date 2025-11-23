@@ -89,16 +89,6 @@ rclone copy \
 
 ---
 
-## Assessed but Not Yet Transferred
-
-The following datasets were assessed for size and content but have not yet been migrated:
-
-| Workspace/Dataset | Size | Files | Notes |
-|-------------------|------|-------|-------|
-| Workspaces/Sunil/ | 1.4 TB | 10,940 | Pending transfer decision |
-
----
-
 ## Migration Statistics Summary
 
 | Category | Total Size | Total Files | Status |
@@ -162,7 +152,6 @@ rclone-seed-data-20251122-201117.log
 
 ## Next Steps / Pending Items
 
-- [ ] Review Sunil workspace (1.4 TB) for potential migration
 - [ ] Verify data accessibility in S3
 - [ ] Update application configurations to use S3 paths
 - [ ] Consider archiving or deleting GCS data after verification period
