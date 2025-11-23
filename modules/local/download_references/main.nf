@@ -3,7 +3,7 @@ process DOWNLOAD_REFERENCES {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container 'docker://google/cloud-sdk:alpine'
+    container 'public.ecr.aws/aws-cli/aws-cli:latest'
 
     // Cache reference files to avoid re-downloading
     publishDir "${params.reference_cache_dir}/fasta", mode: params.publish_dir_mode, pattern: "*.fa"
@@ -30,14 +30,14 @@ process DOWNLOAD_REFERENCES {
 
         echo "Downloading \$description from \$url..."
 
-        if ! gsutil cp "\$url" "\$output" 2>/dev/null; then
+        if ! aws s3 cp "\$url" "\$output" 2>/dev/null; then
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "❌ DOWNLOAD ERROR: Failed to download \$description"
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo ""
             echo "🔧 MANUAL DOWNLOAD REQUIRED:"
             echo "The pipeline cannot download the required reference files. This could be due to:"
-            echo "  • Authentication issues with Google Cloud Storage"
+            echo "  • Authentication issues with AWS S3"
             echo "  • Network connectivity problems"
             echo "  • Container access issues"
             echo ""
@@ -47,7 +47,7 @@ process DOWNLOAD_REFERENCES {
             echo ""
             echo "💡 Commands to run:"
             echo "   mkdir -p ${params.reference_cache_dir}/fasta"
-            echo "   gsutil cp \$url ${params.reference_cache_dir}/fasta/\$output"
+            echo "   aws s3 cp \$url ${params.reference_cache_dir}/fasta/\$output"
             echo ""
             echo "   OR if you have the file locally:"
             echo "   cp /path/to/your/\$output ${params.reference_cache_dir}/fasta/\$output"
@@ -77,7 +77,7 @@ process DOWNLOAD_REFERENCES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gsutil: \$(gsutil version | head -n1 | cut -d' ' -f3)
+        aws-cli: \$(aws --version 2>&1 | cut -d' ' -f1 | cut -d'/' -f2)
     END_VERSIONS
     """
 
@@ -91,7 +91,7 @@ process DOWNLOAD_REFERENCES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gsutil: \$(echo "498.0.0")
+        aws-cli: \$(echo "2.15.0")
     END_VERSIONS
     """
 }

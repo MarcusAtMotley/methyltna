@@ -3,7 +3,7 @@ process DOWNLOAD_CLOUD_CACHE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container 'docker://google/cloud-sdk:alpine'
+    container 'public.ecr.aws/aws-cli/aws-cli:latest'
 
     // Cache reference files locally
     publishDir "${params.reference_cache_dir}/fasta", mode: params.publish_dir_mode, pattern: "*.fa"
@@ -36,7 +36,7 @@ process DOWNLOAD_CLOUD_CACHE {
 
     # CRITICAL: Check authentication first - fail loudly if not authenticated
     echo "🔐 Verifying cloud storage authentication..."
-    if ! gsutil ls "${params.cloud_reference_cache}/" >/dev/null 2>&1; then
+    if ! aws s3 ls "${params.cloud_reference_cache}/" >/dev/null 2>&1; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "❌ FATAL ERROR: Cannot access cloud storage"
@@ -48,7 +48,7 @@ process DOWNLOAD_CLOUD_CACHE {
         echo ""
         echo "⚠️  REFUSING TO CONTINUE - Please authenticate first:"
         echo ""
-        echo "    gcloud auth login --no-launch-browser"
+        echo "    aws configure"
         echo ""
         echo "Or disable cloud cache with:"
         echo ""
@@ -63,10 +63,10 @@ process DOWNLOAD_CLOUD_CACHE {
     # Download genome FASTA if not already cached locally
     if [ ! -f "${params.reference_cache_dir}/fasta/${genome_filename}" ]; then
         echo "[1/4] Checking for genome FASTA: ${genome_filename}"
-        if gsutil -q stat "${params.cloud_reference_cache}/fasta/${genome_filename}" 2>/dev/null; then
+        if aws s3 ls "${params.cloud_reference_cache}/fasta/${genome_filename}" >/dev/null 2>&1; then
             echo "      ✓ Found in cloud cache at: ${params.cloud_reference_cache}/fasta/"
             echo "      ⬇  Downloading..."
-            gsutil -m cp "${params.cloud_reference_cache}/fasta/${genome_filename}" .
+            aws s3 cp "${params.cloud_reference_cache}/fasta/${genome_filename}" .
             if [ \$? -eq 0 ]; then
                 echo "      ✅ Successfully downloaded genome FASTA from cloud cache"
             else
@@ -84,10 +84,10 @@ process DOWNLOAD_CLOUD_CACHE {
     # Download GTF if not already cached locally
     if [ ! -f "${params.reference_cache_dir}/${gtf_filename}" ]; then
         echo "[2/4] Checking for GTF annotation: ${gtf_filename}"
-        if gsutil -q stat "${params.cloud_reference_cache}/${gtf_filename}" 2>/dev/null; then
+        if aws s3 ls "${params.cloud_reference_cache}/${gtf_filename}" >/dev/null 2>&1; then
             echo "      ✓ Found in cloud cache at: ${params.cloud_reference_cache}/"
             echo "      ⬇  Downloading..."
-            gsutil -m cp "${params.cloud_reference_cache}/${gtf_filename}" .
+            aws s3 cp "${params.cloud_reference_cache}/${gtf_filename}" .
             if [ \$? -eq 0 ]; then
                 echo "      ✅ Successfully downloaded GTF annotation from cloud cache"
             else
@@ -105,11 +105,11 @@ process DOWNLOAD_CLOUD_CACHE {
     # Download STAR index if not already cached locally
     if [ ! -d "${params.reference_cache_dir}/star_indexes/${genome_id}" ]; then
         echo "[3/4] Checking for STAR index: ${genome_id}"
-        if gsutil -q stat "${params.cloud_reference_cache}/star_indexes/${genome_id}/Genome" 2>/dev/null; then
+        if aws s3 ls "${params.cloud_reference_cache}/star_indexes/${genome_id}/Genome" >/dev/null 2>&1; then
             echo "      ✓ Found in cloud cache at: ${params.cloud_reference_cache}/star_indexes/"
             echo "      ⬇  Downloading (~30GB, this may take a few minutes)..."
             mkdir -p star_indexes
-            gsutil -m cp -r "${params.cloud_reference_cache}/star_indexes/${genome_id}" star_indexes/
+            aws s3 cp --recursive "${params.cloud_reference_cache}/star_indexes/${genome_id}" "star_indexes/${genome_id}/"
             if [ \$? -eq 0 ]; then
                 echo "      ✅ Successfully downloaded STAR index from cloud cache"
             else
@@ -127,11 +127,11 @@ process DOWNLOAD_CLOUD_CACHE {
     # Download Biscuit index if not already cached locally
     if [ ! -d "${params.reference_cache_dir}/biscuit_indexes/${genome_id}" ]; then
         echo "[4/4] Checking for Biscuit index: ${genome_id}"
-        if gsutil -q stat "${params.cloud_reference_cache}/biscuit_indexes/${genome_id}/${genome_filename}.dau.bwt" 2>/dev/null; then
+        if aws s3 ls "${params.cloud_reference_cache}/biscuit_indexes/${genome_id}/${genome_filename}.dau.bwt" >/dev/null 2>&1; then
             echo "      ✓ Found in cloud cache at: ${params.cloud_reference_cache}/biscuit_indexes/"
             echo "      ⬇  Downloading (~13GB, this may take a few minutes)..."
             mkdir -p biscuit_indexes
-            gsutil -m cp -r "${params.cloud_reference_cache}/biscuit_indexes/${genome_id}" biscuit_indexes/
+            aws s3 cp --recursive "${params.cloud_reference_cache}/biscuit_indexes/${genome_id}" "biscuit_indexes/${genome_id}/"
             if [ \$? -eq 0 ]; then
                 echo "      ✅ Successfully downloaded Biscuit index from cloud cache"
             else
@@ -149,7 +149,7 @@ process DOWNLOAD_CLOUD_CACHE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gsutil: \$(gsutil version | head -n1 | cut -d' ' -f3)
+        aws-cli: \$(aws --version 2>&1 | cut -d' ' -f1 | cut -d'/' -f2)
     END_VERSIONS
     """
 
@@ -161,7 +161,7 @@ process DOWNLOAD_CLOUD_CACHE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gsutil: \$(echo "498.0.0")
+        aws-cli: \$(echo "2.15.0")
     END_VERSIONS
     """
 }

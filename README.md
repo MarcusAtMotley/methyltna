@@ -151,8 +151,8 @@ times: 1
 #### Reference Files
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `--genome_fasta` | Path to genome FASTA (local or gs://) | **Required** |
-| `--annotation_gtf` | Path to GTF annotation (local or gs://) | **Required** |
+| `--genome_fasta` | Path to genome FASTA (local or s3://) | **Required** |
+| `--annotation_gtf` | Path to GTF annotation (local or s3://) | **Required** |
 | `--reference_cache_dir` | Cache directory for references/indexes | `./references` |
 | `--star_index` | Pre-built STAR index (optional) | `null` |
 | `--biscuit_index` | Pre-built Biscuit index (optional) | `null` |
@@ -195,8 +195,8 @@ nextflow run . \
 nextflow run . \
     -profile singularity \
     --input samplesheet.csv \
-    --genome_fasta gs://bucket/genome.fa \
-    --annotation_gtf gs://bucket/annotation.gtf \
+    --genome_fasta s3://bucket/genome.fa \
+    --annotation_gtf s3://bucket/annotation.gtf \
     --force_redownload_references \
     --outdir results
 
@@ -333,8 +333,8 @@ BCL/FASTQ → Read Trimming → TNA Deconvolution → ╔═══════�
 
 ### Common Issues
 
-**Reference download failures (gs:// URLs):**
-- Ensure gcloud authentication: `gcloud auth application-default login`
+**Reference download failures (s3:// URLs):**
+- Ensure AWS CLI authentication: `aws configure`
 - Use `--force_redownload_references` to bypass cache
 - Alternatively, download manually and provide local paths
 

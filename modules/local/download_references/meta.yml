@@ -1,16 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "download_references"
-description: Download reference genome, GTF, and transcriptome files from GCS bucket
+description: Download reference genome, GTF, and transcriptome files from S3 bucket
 keywords:
   - reference
   - genome
   - transcriptome
   - download
-  - gcs
+  - s3
 tools:
-  - "gsutil":
-      description: "Google Cloud Storage utility for downloading files"
-      homepage: "https://cloud.google.com/storage/docs/gsutil"
+  - "aws-cli":
+      description: "AWS Command Line Interface for downloading files from S3"
+      homepage: "https://aws.amazon.com/cli/"
 
 input: []
 

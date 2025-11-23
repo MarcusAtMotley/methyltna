@@ -39,7 +39,7 @@ workflow PREPARE_REFERENCES {
     def need_cloud_download = false
 
     // Check if we need FASTA/GTF from cloud or original source
-    if (params.genome_fasta.startsWith('gs://') && (!genome_cached || params.force_redownload_references)) {
+    if (params.genome_fasta.startsWith('s3://') && (!genome_cached || params.force_redownload_references)) {
         // Check if available in cloud cache before downloading from original source
         if (!params.force_redownload_references && params.cloud_reference_cache) {
             need_cloud_download = true
@@ -47,7 +47,7 @@ workflow PREPARE_REFERENCES {
             need_download = true
         }
     }
-    if (params.annotation_gtf.startsWith('gs://') && (!gtf_cached || params.force_redownload_references)) {
+    if (params.annotation_gtf.startsWith('s3://') && (!gtf_cached || params.force_redownload_references)) {
         // Check if available in cloud cache before downloading from original source
         if (!params.force_redownload_references && params.cloud_reference_cache) {
             need_cloud_download = true
@@ -103,7 +103,7 @@ workflow PREPARE_REFERENCES {
 
     if (need_download) {
         //
-        // MODULE: Download references from original GCS source if not in cache
+        // MODULE: Download references from original S3 source if not in cache
         //
         DOWNLOAD_REFERENCES()
         ch_versions = ch_versions.mix(DOWNLOAD_REFERENCES.out.versions)
@@ -112,7 +112,7 @@ workflow PREPARE_REFERENCES {
         ch_annotation_gtf = DOWNLOAD_REFERENCES.out.gtf.map { gtf -> [[id:'annotation'], gtf] }
     } else {
         // Use cached files if available, otherwise use provided local paths
-        if (genome_cached && params.genome_fasta.startsWith('gs://')) {
+        if (genome_cached && params.genome_fasta.startsWith('s3://')) {
             ch_genome_fasta = Channel.fromPath("${params.reference_cache_dir}/fasta/${genome_filename}")
                 .map { fasta -> [[id:'genome'], fasta] }
         } else {
@@ -120,7 +120,7 @@ workflow PREPARE_REFERENCES {
                 .map { fasta -> [[id:'genome'], fasta] }
         }
 
-        if (gtf_cached && params.annotation_gtf.startsWith('gs://')) {
+        if (gtf_cached && params.annotation_gtf.startsWith('s3://')) {
             ch_annotation_gtf = Channel.fromPath("${params.reference_cache_dir}/${gtf_filename}")
                 .map { gtf -> [[id:'annotation'], gtf] }
         } else {

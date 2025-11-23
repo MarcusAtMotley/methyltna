@@ -220,30 +220,30 @@
                 },
                 "genome_fasta": {
                     "type": "string",
-                    "default": "gs://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa",
+                    "default": "s3://motleybio/Resources/reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa",
                     "description": "Path to reference genome FASTA file.",
-                    "help_text": "Can be a local file path or remote GCS URL. Used for DNA/unbarcoded read analysis.",
+                    "help_text": "Can be a local file path or remote S3 URL. Used for DNA/unbarcoded read analysis.",
                     "fa_icon": "fas fa-file"
                 },
                 "annotation_gtf": {
                     "type": "string",
-                    "default": "gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
+                    "default": "s3://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
                     "description": "Path to genome annotation GTF file.",
-                    "help_text": "GTF file containing gene annotations for STAR alignment and feature counting. Can be a local file path or remote GCS URL.",
+                    "help_text": "GTF file containing gene annotations for STAR alignment and feature counting. Can be a local file path or remote S3 URL.",
                     "fa_icon": "fas fa-file-alt"
                 },
                 "transcriptome_fasta": {
                     "type": "string",
-                    "default": "gs://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa",
+                    "default": "s3://motleybio/Resources/RSEM_Genome/RSEM_hg38.transcripts.fa",
                     "description": "Path to transcriptome FASTA file.",
-                    "help_text": "Can be a local file path or remote GCS URL. Used for RNA/barcoded read analysis.",
+                    "help_text": "Can be a local file path or remote S3 URL. Used for RNA/barcoded read analysis.",
                     "fa_icon": "fas fa-file"
                 },
                 "gtf": {
                     "type": "string",
-                    "default": "gs://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
+                    "default": "s3://motleybio/Resources/GTF/Homo_sapiens.GRCh38.112.chr_label.gtf",
                     "description": "Path to gene annotation GTF file.",
-                    "help_text": "Gene annotation file for the reference genome. Can be local or remote GCS URL.",
+                    "help_text": "Gene annotation file for the reference genome. Can be local or remote S3 URL.",
                     "fa_icon": "fas fa-file-alt"
                 },
                 "star_index": {
@@ -283,11 +283,11 @@
                 },
                 "cloud_reference_cache": {
                     "type": "string",
-                    "default": "gs://motleybio/Workspaces/Marcus/methyltna_references",
+                    "default": "s3://motleybio/Resources/methyltna_references",
                     "description": "Cloud storage location for backup reference cache.",
-                    "help_text": "GCS bucket path containing pre-downloaded references and pre-built indexes. Pipeline will check here before downloading from original sources, significantly speeding up reference preparation in new environments.",
+                    "help_text": "S3 bucket path containing pre-downloaded references and pre-built indexes. Pipeline will check here before downloading from original sources, significantly speeding up reference preparation in new environments.",
                     "fa_icon": "fas fa-cloud",
-                    "pattern": "^gs://.*"
+                    "pattern": "^s3://.*"
                 }
             }
         },
