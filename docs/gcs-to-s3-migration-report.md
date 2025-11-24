@@ -373,6 +373,87 @@ params {
 
 ---
 
+## GCS Cleanup Progress
+
+**Goal:** Minimize GCS storage costs after credits expire by removing S3-duplicated data while preserving unique files.
+
+### Sunil Workspace Cleanup (November 23-24, 2025)
+
+**Action:** Removed S3-duplicated directories from `gs://motleybio/Workspaces/Sunil/`
+
+All directories below were verified as perfect duplicates in S3 (`s3://motleybio/Workspaces/Sunil/`) with **0 differences** using `rclone check --one-way --checksum` before deletion:
+
+#### Directories Deleted from GCS
+
+| Directory | Size | Verification |
+|-----------|------|--------------|
+| NEXTFLOW | 1.29 TB | ✓ Perfect duplicate in S3 |
+| METHYLATION | 8.4 GB | ✓ Perfect duplicate in S3 |
+| Laboratory | 6.4 GB | ✓ Perfect duplicate in S3 |
+| TCGA | 166 MB | ✓ Perfect duplicate in S3 |
+| ASSAY_VALIDATION | - | ✓ Perfect duplicate in S3 |
+| CHANG_2023 | - | ✓ Perfect duplicate in S3 |
+| DBGAP | - | ✓ Perfect duplicate in S3 |
+| DECONVOLUTION | - | ✓ Perfect duplicate in S3 |
+| FIVE_LETTER | - | ✓ Perfect duplicate in S3 |
+| GNN_MODEL | - | ✓ Perfect duplicate in S3 |
+| INDEL_MULTIOMIC | - | ✓ Perfect duplicate in S3 |
+| LOYFER_REGIONS | - | ✓ Perfect duplicate in S3 |
+| MATK | - | ✓ Perfect duplicate in S3 |
+| MEDGENOME | 12.5 MB | ✓ Perfect duplicate in S3 |
+| METHYL_SNP_SEQ | - | ✓ Perfect duplicate in S3 |
+| MSI_PROJECT | - | ✓ Perfect duplicate in S3 |
+| TEST | - | ✓ Perfect duplicate in S3 |
+| TEST_MATK | - | ✓ Perfect duplicate in S3 |
+| Tao_2023_Analysis | - | ✓ Perfect duplicate in S3 |
+| **Total Deleted** | **~1.39 TB** | **19 directories** |
+
+#### Directories Retained in GCS
+
+The following directories exist **only in GCS** and were retained for potential value:
+
+| Directory | Size | Reason |
+|-----------|------|--------|
+| GOOGLE_CLOUD_NEXTFLOW | 2.92 GB | Not in S3 - may contain useful configs/outputs |
+| GRANT | 7.4 MB | Not in S3 - grant-related materials |
+| RNASEQ_GENOMIC_DISTRIBUTION | 168 KB | Not in S3 - small analysis files |
+| **Total Retained** | **~2.9 GB** | **3 directories** |
+
+#### Cost Impact
+
+- **Storage Deleted:** 1.39 TB from Sunil workspace
+- **Monthly Savings:** ~$29/month (at $0.023/GB Standard Storage)
+- **Annual Savings:** ~$348/year
+- **Workspace Reduction:** 99.8% (1.4 TB → 2.9 GB)
+
+#### Verification Method
+
+```bash
+# Verification command used before deletion
+rclone check \
+  gcs:motleybio/Workspaces/Sunil/DIRECTORY_NAME \
+  s3:motleybio/Workspaces/Sunil/DIRECTORY_NAME \
+  --one-way --checksum --dry-run
+```
+
+Only directories showing **"0 differences found"** were deleted from GCS.
+
+### Strategy
+
+**Keep in GCS (small footprint):**
+- Unique files not in S3
+- Legacy configurations that might be needed
+- Files too small to matter (<10 GB total)
+
+**Delete from GCS (after verification):**
+- Perfect duplicates confirmed in S3
+- Large directories consuming storage costs
+- Data already in production on AWS
+
+**Result:** Maintaining GCS bucket for legacy access with minimal ongoing costs while primary workloads run on AWS.
+
+---
+
 ## Transfer Logs
 
 ### Log Files Location
