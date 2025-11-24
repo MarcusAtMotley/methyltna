@@ -12,14 +12,15 @@
 
 ## Executive Summary
 
-Successfully migrated approximately **4 TiB** of genomics data from Google Cloud Storage to Amazon S3 to support methylTNA pipeline transition to AWS. All critical data verified with MD5 checksums. Total egress cost (~$411) covered by GCS credits.
+Successfully migrated approximately **5 TiB** of genomics data from Google Cloud Storage to Amazon S3 to support methylTNA pipeline transition to AWS. All critical data verified with MD5 checksums. Total egress cost (~$571) covered by GCS credits.
 
 **Key Achievements:**
-- 📦 ~4 TiB of data transferred across 102,000+ files
+- 📦 ~5 TiB of data transferred across 102,000+ files
 - ✅ Zero data integrity issues (checksum verified)
-- 💰 $411 egress cost covered by existing GCS credits
+- 💰 $571 egress cost covered by existing GCS credits
 - ⚡ Average transfer speed: 64.7 MiB/s for large datasets
 - 🔒 All transfers logged and archived on S3
+- 💾 Preserved 1.33 TB of processed MEDGENOME data (70% size reduction vs raw)
 
 ---
 
@@ -147,16 +148,39 @@ rclone copy \
 
 ---
 
+### 5. MEDGENOME Processed Data Preservation
+**Source:** `gs://motleybio/Laboratory/MEDGENOME/PROCESSED_DATA/`
+**Destination:** `s3://motleybio/Laboratory/MEDGENOME_GCS_PROCESSED/`
+**Completion Time:** November 23, 2025
+
+| Item | Size | Files | Duration | Avg Speed | Status |
+|------|------|-------|----------|-----------|--------|
+| MEDGENOME_GCS_PROCESSED | 1.33 TB | 190 | ~6h | ~62 MiB/s | ✓ Complete |
+
+**Rationale:** Prior to deleting the MEDGENOME directory from GCS (5.87 TB total), the processed data was selectively migrated to S3 to avoid future reprocessing costs. The processed data represents a **70% reduction** in storage compared to raw data (4.54 TB → 1.33 TB) and includes BAM files, VCF files, and other analysis outputs. This preserves the computational work while raw sequencing data (BCL and FASTQ files) remains available in a separate AWS bucket.
+
+**Transfer Command:**
+```bash
+rclone copy \
+  gcs:motleybio/Laboratory/MEDGENOME/PROCESSED_DATA/ \
+  s3:motleybio/Laboratory/MEDGENOME_GCS_PROCESSED/ \
+  --progress --stats 30s --transfers 16 --checkers 32 --checksum \
+  --log-file ~/rclone-medgenome-processed-$(date +%Y%m%d-%H%M%S).log
+```
+
+---
+
 ## Migration Statistics Summary
 
 | Category | Total Size | Total Files | Egress Cost* | Status |
 |----------|-----------|-------------|--------------|--------|
-| Laboratory Data | ~2.93 TB | 9,367 | ~$330 | ✓ Complete |
+| Laboratory Data (ASSAY_DEVELOPMENT) | ~2.93 TB | 9,367 | ~$330 | ✓ Complete |
+| Laboratory Data (MEDGENOME) | 1.33 TB | 190 | ~$160 | ✓ Complete |
 | Reference Files | ~5 GB | 259 | ~$0.60 | ✓ Complete |
 | Pre-built Indexes | 55.7 GB | 52 | ~$6.69 | ✓ Complete |
 | NGS Software | 7.4 GB | 45,144 | ~$0.89 | ✓ Complete |
 | ML Datasets | 608.7 GB | 47,381 | ~$73 | ✓ Complete |
-| **Grand Total** | **~3.58 TB** | **~102,203 files** | **~$411** | ✓ Complete |
+| **Grand Total** | **~4.91 TB** | **~102,393 files** | **~$571** | ✓ Complete |
 
 *Estimated based on GCS North America egress pricing ($0.12/GB). **All costs covered by existing GCS credits.**
 
@@ -283,14 +307,14 @@ params {
 ## Cost Analysis
 
 ### One-Time Migration Costs:
-- **GCS Egress:** ~$411 (covered by GCS credits ✅)
-- **GCE Instance:** ~$0.50 (e2-medium for ~10 hours)
+- **GCS Egress:** ~$571 (covered by GCS credits ✅)
+- **GCE Instance:** ~$0.50 (e2-medium for ~16 hours)
 - **S3 Ingress:** $0 (AWS doesn't charge for ingress)
 - **Total out-of-pocket cost:** ~$0.50
 
 ### Ongoing S3 Storage Costs:
-- **Storage (Standard):** ~4 TiB × $0.023/GB/month = **~$94/month**
-- **Alternative (Intelligent-Tiering):** **~$65-75/month** (recommended for cost optimization)
+- **Storage (Standard):** ~5 TiB × $0.023/GB/month = **~$118/month**
+- **Alternative (Intelligent-Tiering):** **~$80-90/month** (recommended for cost optimization)
 
 ---
 
@@ -372,6 +396,7 @@ rclone-indexes-20251122-010126.log
 rclone-ngs-software-20251122-194756.log
 rclone-foundation-20251122-201118.log
 rclone-seed-data-20251122-201117.log
+rclone-medgenome-processed-20251123-XXXXXX.log
 ```
 
 ---
