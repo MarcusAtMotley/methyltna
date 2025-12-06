@@ -22,6 +22,12 @@ process DOWNLOAD_REFERENCES {
     def genome_filename = params.genome_fasta.tokenize('/').last()
     def gtf_filename = params.annotation_gtf.tokenize('/').last()
     """
+    # Install AWS CLI if not present (needed for amazonlinux container in AWS Batch)
+    if ! command -v aws &> /dev/null; then
+        echo "Installing AWS CLI..."
+        yum install -y awscli 2>/dev/null || dnf install -y awscli 2>/dev/null || pip3 install awscli 2>/dev/null || true
+    fi
+
     # Function to provide helpful error messages for authentication failures
     download_with_error_handling() {
         local url="\$1"

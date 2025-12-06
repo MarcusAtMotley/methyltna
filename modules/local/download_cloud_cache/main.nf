@@ -28,6 +28,12 @@ process DOWNLOAD_CLOUD_CACHE {
 
     script:
     """
+    # Install AWS CLI if not present (needed for amazonlinux container in AWS Batch)
+    if ! command -v aws &> /dev/null; then
+        echo "Installing AWS CLI..."
+        yum install -y awscli 2>/dev/null || dnf install -y awscli 2>/dev/null || pip3 install awscli 2>/dev/null || true
+    fi
+
     # Try to download from cloud reference cache
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "📦 Checking cloud reference cache..."
