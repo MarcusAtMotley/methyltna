@@ -173,10 +173,14 @@ workflow PREPARE_REFERENCES {
 
 
     // Build or use Biscuit genome index - priority: user-provided > cloud > local cache > build
+    // Only needed if methylsnp analysis is enabled
     // Use pure channel operations to ensure proper dependency ordering
     def biscuit_index_dir = "${params.reference_cache_dir}/biscuit_indexes/${genome_id}"
 
-    if (params.biscuit_index != null) {
+    if (params.skip_methylsnp_analysis) {
+        // Skip Biscuit index entirely if methylsnp analysis is disabled
+        ch_biscuit_index = Channel.empty()
+    } else if (params.biscuit_index != null) {
         // Priority 1: User provided explicit Biscuit index path
         ch_biscuit_index = Channel.fromPath(params.biscuit_index)
             .map { dir -> [[id:'genome'], dir] }
@@ -184,19 +188,23 @@ workflow PREPARE_REFERENCES {
         // Priority 2: Use local cache (check at DAG construction time)
         ch_biscuit_index = Channel.fromPath(biscuit_index_dir)
             .map { dir -> [[id:'genome'], dir] }
-    } else if (need_cloud_download && params.cloud_reference_cache) {
-        // Priority 3: Try cloud download first, fall back to building
+    } else if (need_cloud_download && params.cloud_reference_cache && ch_biscuit_index_from_cloud) {
+        // Priority 3: Use cloud-downloaded index if available, otherwise build
+        // Check if cloud provided the index by using a branching approach
         def ch_genome_with_id = ch_genome_fasta.map { meta, fasta ->
             [meta + [genome_id: genome_id], fasta]
         }
 
-        ch_biscuit_index = ch_biscuit_index_from_cloud
-            .ifEmpty {
-                // Cloud didn't provide - build from scratch
-                BISCUIT_INDEX(ch_genome_with_id)
-                BISCUIT_INDEX.out.index
+        // Branch: either use cloud index or build from scratch
+        ch_biscuit_index_from_cloud
+            .branch {
+                found: true  // Any items go to 'found' branch
             }
-        // Mix versions outside the closure to avoid concurrent modification
+            .set { ch_biscuit_branched }
+
+        // If cloud provided index, use it; otherwise build
+        BISCUIT_INDEX(ch_genome_with_id.filter { ch_biscuit_branched.found.count() == 0 })
+        ch_biscuit_index = ch_biscuit_index_from_cloud.mix(BISCUIT_INDEX.out.index)
         ch_versions = ch_versions.mix(BISCUIT_INDEX.out.versions.ifEmpty(Channel.empty()))
     } else {
         // Priority 4: Build from scratch

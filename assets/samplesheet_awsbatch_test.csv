@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2
+12M_TNA-EM,s3://motleybio/Laboratory/ASSAY_DEVELOPMENT/run_motley30/bclconvert/output/12M_3A2_FFPE-A10_TNA-EM_S2_R1_001.fastq.gz,s3://motleybio/Laboratory/ASSAY_DEVELOPMENT/run_motley30/bclconvert/output/12M_3A2_FFPE-A10_TNA-EM_S2_R2_001.fastq.gz
